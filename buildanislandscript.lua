@@ -3,6 +3,7 @@ local DiscordLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/bl
 local win = DiscordLib:Window("discord library")
 local serv = win:Server("Made by Billel", "")
 local main = serv:Channel("Main")
+local coll = serv:Channel("Collection")
 local event = serv:Channel("Events")
 local fish = serv:Channel("Fishing")
 local shop = serv:Channel("Shop")
@@ -22,7 +23,7 @@ main:Seperator()
 local autoFarmPlot = false
 local farmPlotConnection
 
-main:Toggle("Auto-Farm Plot", false, function(state)
+coll:Toggle("Auto-Farm Plot", false, function(state)
     autoFarmPlot = state
 
     if state then
@@ -105,7 +106,7 @@ end)
 local autohive = false
 local hiveConnection
 
-main:Toggle("Auto-Hive", false, function(state)
+coll:Toggle("Auto-Hive", false, function(state)
     autohive = state
 
     if state then
@@ -132,7 +133,7 @@ end)
 local autoharvest = false
 local harvestConnection
 
-main:Toggle("Auto-Harvest", false, function(state)
+coll:Toggle("Auto-Harvest", false, function(state)
     autoharvest = state
 
     if state then
@@ -325,7 +326,7 @@ main:Toggle("Auto Crafter", false, function(state)
 end)
 
 local autoGoldMine = false
-main:Toggle("Auto Gold Mine", false, function(state)
+coll:Toggle("Auto Gold Mine", false, function(state)
     autoGoldMine = state
 
     if state then
@@ -351,7 +352,7 @@ main:Toggle("Auto Gold Mine", false, function(state)
 end)
 
 local autoCollectGold = false
-main:Toggle("Auto Collect Gold", false, function(state)
+coll:Toggle("Auto Collect Gold", false, function(state)
     autoCollectGold = state
 
     if state then
