@@ -68,8 +68,8 @@ task.spawn(function()
     end
 end)
 
--- Auto-Farm World Tree
 local autoFarmWT = false
+
 event:Toggle("Auto-Farm World Tree", false, function(state)
     autoFarmWT = state
 end)
@@ -77,22 +77,23 @@ end)
 task.spawn(function()
     while true do
         if autoFarmWT then
-            local worldtree = workspace:FindFirstChild("GlobalResources")
-            if worldtree and worldtree:FindFirstChild("World Tree") then
-                for _, resource in ipairs(rainbow.Resources:GetChildren()) do
-                    local success, err = pcall(function()
-                        game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
-                    end)
-                    if not success then
-                        warn("Rainbow HitResource failed:", err)
-                    end
-                    task.wait(0.01)
+            local globalResources = workspace:FindFirstChild("GlobalResources")
+            local worldTree = globalResources and globalResources:FindFirstChild("World Tree")
+
+            if worldTree then
+                local success, err = pcall(function()
+                    game.ReplicatedStorage.Communication.HitResource:FireServer(worldTree)
+                end)
+
+                if not success then
+                    warn("World Tree HitResource failed:", err)
                 end
             end
         end
         task.wait(0.1)
     end
 end)
+
 
 
 
