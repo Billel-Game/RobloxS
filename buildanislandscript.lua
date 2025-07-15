@@ -239,7 +239,7 @@ end)
 
 local RunService = game:GetService("RunService")
 local lastCast = 0
-local cooldown = 0.01 -- You can try even lower if the server allows it
+local cooldown = 0.001 -- You can try even lower if the server allows it
 
 RunService.Heartbeat:Connect(function()
     if autoFish and (tick() - lastCast) >= cooldown then
