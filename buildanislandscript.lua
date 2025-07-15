@@ -3,6 +3,7 @@ local DiscordLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/bl
 local win = DiscordLib:Window("discord library")
 local serv = win:Server("Preview", "")
 local main = serv:Channel("Main")
+local event = serv:Channel("Events")
 
 local Players = game:GetService("Players")
 local plr = Players.LocalPlayer
@@ -43,7 +44,7 @@ end)
 
 -- Auto-Farm Rainbow Island
 local autoFarmRainbow = false
-main:Toggle("Auto-Farm Rainbow Island", false, function(state)
+event:Toggle("Auto-Farm Rainbow Island", false, function(state)
     autoFarmRainbow = state
 end)
 
