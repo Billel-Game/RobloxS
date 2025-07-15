@@ -393,3 +393,49 @@ coll:Toggle("Auto Collect Gold", false, function(state)
     end
 end)
 
+local selectedItem = "Coal Crate" -- default item
+local autoBuy = false
+
+-- Dropdown
+shop:Dropdown("Select Item to Auto-Buy", {
+    "Corn Seeds",
+    "Coal Crate",
+    "Honey Bee",
+    "Busy Bee Potion",
+    "Growth Potion"
+}, function(choice)
+    selectedItem = choice
+    print("Selected item:", selectedItem)
+end)
+
+-- Toggle
+shop:Toggle("Auto-Buy Selected Item", false, function(state)
+    autoBuy = state
+
+    if state then
+        task.spawn(function()
+            while autoBuy do
+                local args = {
+                    selectedItem,
+                    false -- adjust if needed (true might mean bulk buy or confirm dialog)
+                }
+
+                local success, err = pcall(function()
+                    game:GetService("ReplicatedStorage")
+                        :WaitForChild("Communication")
+                        :WaitForChild("BuyFromMerchant")
+                        :FireServer(unpack(args))
+                end)
+
+                if not success then
+                    warn("Auto-Buy failed:", err)
+                else
+                    print("Auto-bought:", selectedItem)
+                end
+
+                task.wait(1) -- cooldown between purchases
+            end
+        end)
+    end
+end)
+
