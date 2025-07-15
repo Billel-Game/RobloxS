@@ -408,34 +408,57 @@ shop:Dropdown("Select Item to Auto-Buy", {
     print("Selected item:", selectedItem)
 end)
 
--- Toggle
-shop:Toggle("Auto-Buy Selected Item", false, function(state)
-    autoBuy = state
+local autoBuyItems = {}
+local autoBuyMerchant = false
+
+-- Toggles for each item
+local itemList = {
+    "Coal Crate",
+    "Copper Crate",
+    "Lightning Crate",
+    "Bee Crate",
+    "Gem Crate"
+}
+
+for _, itemName in ipairs(itemList) do
+    autoBuyItems[itemName] = false
+    shop:Toggle("Buy " .. itemName, false, function(state)
+        autoBuyItems[itemName] = state
+    end)
+end
+
+-- Master auto-buy toggle
+shop:Toggle("Auto-Buy Selected Items", false, function(state)
+    autoBuyMerchant = state
 
     if state then
         task.spawn(function()
-            while autoBuy do
-                local args = {
-                    selectedItem,
-                    false -- adjust if needed (true might mean bulk buy or confirm dialog)
-                }
+            while autoBuyMerchant do
+                for itemName, shouldBuy in pairs(autoBuyItems) do
+                    if shouldBuy then
+                        local args = { itemName, false }
 
-                local success, err = pcall(function()
-                    game:GetService("ReplicatedStorage")
-                        :WaitForChild("Communication")
-                        :WaitForChild("BuyFromMerchant")
-                        :FireServer(unpack(args))
-                end)
+                        local success, err = pcall(function()
+                            game:GetService("ReplicatedStorage")
+                                :WaitForChild("Communication")
+                                :WaitForChild("BuyFromMerchant")
+                                :FireServer(unpack(args))
+                        end)
 
-                if not success then
-                    warn("Auto-Buy failed:", err)
-                else
-                    print("Auto-bought:", selectedItem)
+                        if not success then
+                            warn("Failed to buy", itemName, ":", err)
+                        else
+                            print("Bought:", itemName)
+                        end
+
+                        task.wait(0.5) -- Delay between each item
+                    end
                 end
 
-                task.wait(1) -- cooldown between purchases
+                task.wait(2) -- Delay before repeating the whole loop
             end
         end)
     end
 end)
+
 
