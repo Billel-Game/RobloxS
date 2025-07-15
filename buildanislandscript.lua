@@ -237,30 +237,33 @@ event:Toggle("Auto-Fish", false, function(state)
     autoFish = state
 end)
 
-task.spawn(function()
-    while true do
-        if autoFish then
-            local args = {
-                Vector3.new(-553.862060546875, -1.6463816165924072, -95.60205078125),
-                0.42542959961479954
-            }
+local RunService = game:GetService("RunService")
+local lastCast = 0
+local cooldown = 0.01 -- You can try even lower if the server allows it
 
-            local success, err = pcall(function()
-                game:GetService("ReplicatedStorage")
-                    :WaitForChild("Communication")
-                    :WaitForChild("Fish")
-                    :InvokeServer(unpack(args))
-            end)
+RunService.Heartbeat:Connect(function()
+    if autoFish and (tick() - lastCast) >= cooldown then
+        lastCast = tick()
 
-            if not success then
-                warn("Auto-Fish failed:", err)
-            end
+        local args = {
+            Vector3.new(-553.862060546875, -1.6463816165924072, -95.60205078125),
+            0.42542959961479954
+        }
 
-            task.wait(0.1) -- adjust as needed to match cooldown
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage")
+                :WaitForChild("Communication")
+                :WaitForChild("Fish")
+                :InvokeServer(unpack(args))
+        end)
+
+        if not success then
+            warn("Auto-Fish failed:", err)
         end
-        task.wait(0.1)
     end
 end)
+
+
 
 event:Button("Teleport to Fishing Spot", function()
     local char = game.Players.LocalPlayer.Character
