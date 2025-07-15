@@ -256,7 +256,7 @@ task.spawn(function()
                 warn("Auto-Fish failed:", err)
             end
 
-            task.wait(1.5) -- adjust as needed to match cooldown
+            task.wait(0.1) -- adjust as needed to match cooldown
         end
         task.wait(0.1)
     end
