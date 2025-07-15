@@ -140,3 +140,33 @@ task.spawn(function()
         task.wait(1)
     end
 end)
+
+
+
+local autofarmBigStone = false
+main:Toggle("Auto-Farm Big Stone", false, function(bool)
+    autofarmBigStone = bool
+end)
+
+task.spawn(function()
+    while true do
+        if autofarmBigStone then
+            local plotResources = plot:FindFirstChild("Resources")
+            if plotResources then
+                for _, r in ipairs(plotResources:GetChildren()) do
+                    if r.Name == "Big Stone" then
+                        local success, err = pcall(function()
+                            game:GetService("ReplicatedStorage"):WaitForChild("Communication"):WaitForChild("HitResource"):FireServer(r)
+                        end)
+                        if not success then
+                            warn("HitResource FireServer failed for Big Stone:", err)
+                        end
+                        break -- Only hit the first Big Stone found
+                    end
+                end
+            end
+        end
+        task.wait(0.1)
+    end
+end)
+
