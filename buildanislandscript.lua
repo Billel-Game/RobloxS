@@ -11,43 +11,56 @@ local plot = workspace:WaitForChild("Plots"):WaitForChild(plr.Name)
 local land = plot:FindFirstChild("Land")
 local expand = plot:WaitForChild("Expand")
 
--- Labels and separators
+-- UI Labels
 main:Label("Collection.")
 main:Seperator()
 
--- Auto Farm Toggle
-local autofarm = false
-main:Toggle("Auto-Farm", false, function(state)
-    autofarm = state
+-- Auto-Farm Plot
+local autoFarmPlot = false
+main:Toggle("Auto-Farm Plot", false, function(state)
+    autoFarmPlot = state
 end)
 
 task.spawn(function()
     while true do
-        if autofarm then
-            local allResources = {}
-
+        if autoFarmPlot then
             local plotResources = plot:FindFirstChild("Resources")
             if plotResources then
                 for _, resource in ipairs(plotResources:GetChildren()) do
-                    table.insert(allResources, resource)
+                    local success, err = pcall(function()
+                        game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+                    end)
+                    if not success then
+                        warn("Plot HitResource failed:", err)
+                    end
+                    task.wait(0.01)
                 end
             end
+        end
+        task.wait(0.1)
+    end
+end)
 
+-- Auto-Farm Rainbow Island
+local autoFarmRainbow = false
+main:Toggle("Auto-Farm Rainbow Island", false, function(state)
+    autoFarmRainbow = state
+end)
+
+task.spawn(function()
+    while true do
+        if autoFarmRainbow then
             local rainbow = workspace:FindFirstChild("RainbowIsland")
             if rainbow and rainbow:FindFirstChild("Resources") then
                 for _, resource in ipairs(rainbow.Resources:GetChildren()) do
-                    table.insert(allResources, resource)
+                    local success, err = pcall(function()
+                        game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+                    end)
+                    if not success then
+                        warn("Rainbow HitResource failed:", err)
+                    end
+                    task.wait(0.01)
                 end
-            end
-
-            for _, resource in ipairs(allResources) do
-                local success, err = pcall(function()
-                    game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
-                end)
-                if not success then
-                    warn("HitResource FireServer failed:", err)
-                end
-                task.wait(0.01)
             end
         end
         task.wait(0.1)
