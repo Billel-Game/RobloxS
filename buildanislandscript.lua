@@ -15,9 +15,25 @@ local plot = workspace:WaitForChild("Plots"):WaitForChild(plr.Name)
 local land = plot:FindFirstChild("Land")
 local expand = plot:WaitForChild("Expand")
 
--- UI Labels
-main:Label("Collection.")
-main:Seperator()
+local antiAfkConnection
+
+main:Toggle("Anti AFK", false, function(state)
+    if state then
+        antiAfkConnection = plr.Idled:Connect(function()
+            local vu = game:GetService("VirtualUser")
+            vu:CaptureController()
+            vu:ClickButton2(Vector2.new())
+        end)
+        print("Anti AFK enabled")
+    else
+        if antiAfkConnection then
+            antiAfkConnection:Disconnect()
+            antiAfkConnection = nil
+        end
+        print("Anti AFK disabled")
+    end
+end)
+
 
 -- Auto-Farm Plot
 local autoFarmPlot = false
