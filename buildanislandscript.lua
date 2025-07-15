@@ -184,3 +184,28 @@ task.spawn(function()
         task.wait(1)
     end
 end)
+
+event:Button("Claim All Timed Rewards", function()
+    local rewardNames = {
+        "rewardOne", "rewardTwo", "rewardThree", "rewardFour",
+        "rewardFive", "rewardSix", "rewardSeven", "rewardEight",
+        "rewardNine", "rewardTen", "rewardEleven", "rewardTwelve"
+    }
+
+    for _, reward in ipairs(rewardNames) do
+        local success, err = pcall(function()
+            game:GetService("ReplicatedStorage")
+                :WaitForChild("Communication")
+                :WaitForChild("ClaimTimedReward")
+                :InvokeServer(reward)
+        end)
+
+        if success then
+            print("Claimed:", reward)
+        else
+            warn("Failed to claim:", reward, err)
+        end
+
+        task.wait(0.1) -- slight delay for stability
+    end
+end)
