@@ -6,18 +6,19 @@ local main = serv:Channel("Main")
 
 local Players = game:GetService("Players")
 local plr = Players.LocalPlayer
-local plot = game:GetService("Workspace"):WaitForChild("Plots"):WaitForChild(plr.Name)
+local plot = workspace:WaitForChild("Plots"):WaitForChild(plr.Name)
 
 local land = plot:FindFirstChild("Land")
 local expand = plot:WaitForChild("Expand")
 
+-- Labels and separators
 main:Label("Collection.")
 main:Seperator()
 
--- Auto-Farm
+-- Auto Farm Toggle
 local autofarm = false
-main:Toggle("Auto-Farm", false, function(bool)
-    autofarm = bool
+main:Toggle("Auto-Farm", false, function(state)
+    autofarm = state
 end)
 
 task.spawn(function()
@@ -27,21 +28,21 @@ task.spawn(function()
 
             local plotResources = plot:FindFirstChild("Resources")
             if plotResources then
-                for _, r in ipairs(plotResources:GetChildren()) do
-                    table.insert(allResources, r)
+                for _, resource in ipairs(plotResources:GetChildren()) do
+                    table.insert(allResources, resource)
                 end
             end
 
             local rainbow = workspace:FindFirstChild("RainbowIsland")
             if rainbow and rainbow:FindFirstChild("Resources") then
-                for _, r in ipairs(rainbow.Resources:GetChildren()) do
-                    table.insert(allResources, r)
+                for _, resource in ipairs(rainbow.Resources:GetChildren()) do
+                    table.insert(allResources, resource)
                 end
             end
 
-            for _, r in ipairs(allResources) do
+            for _, resource in ipairs(allResources) do
                 local success, err = pcall(function()
-                    game:GetService("ReplicatedStorage"):WaitForChild("Communication"):WaitForChild("HitResource"):FireServer(r)
+                    game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
                 end)
                 if not success then
                     warn("HitResource FireServer failed:", err)
@@ -53,19 +54,19 @@ task.spawn(function()
     end
 end)
 
--- Auto-Hive
+-- Auto Hive Toggle
 local autohive = false
-main:Toggle("Auto-Hive", false, function(bool)
-    autohive = bool
+main:Toggle("Auto-Hive", false, function(state)
+    autohive = state
 end)
 
 task.spawn(function()
     while true do
-        if autohive then
+        if autohive and land then
             for _, spot in ipairs(land:GetDescendants()) do
                 if spot:IsA("Model") and spot.Name:match("Spot") then
                     local success, err = pcall(function()
-                        game:GetService("ReplicatedStorage"):WaitForChild("Communication"):WaitForChild("Hive"):FireServer(spot.Parent.Name, spot.Name, 2)
+                        game.ReplicatedStorage.Communication.Hive:FireServer(spot.Parent.Name, spot.Name, 2)
                     end)
                     if not success then
                         warn("Hive FireServer failed:", err)
@@ -78,10 +79,10 @@ task.spawn(function()
     end
 end)
 
--- Auto-Harvest
+-- Auto Harvest Toggle
 local autoharvest = false
-main:Toggle("Auto-Harvest", false, function(bool)
-    autoharvest = bool
+main:Toggle("Auto-Harvest", false, function(state)
+    autoharvest = state
 end)
 
 task.spawn(function()
@@ -89,9 +90,9 @@ task.spawn(function()
         if autoharvest then
             local plants = plot:FindFirstChild("Plants")
             if plants then
-                for _, crop in pairs(plants:GetChildren()) do
+                for _, crop in ipairs(plants:GetChildren()) do
                     local success, err = pcall(function()
-                        game:GetService("ReplicatedStorage"):WaitForChild("Communication"):WaitForChild("Harvest"):FireServer(crop.Name)
+                        game.ReplicatedStorage.Communication.Harvest:FireServer(crop.Name)
                     end)
                     if not success then
                         warn("Harvest FireServer failed:", err)
@@ -104,13 +105,13 @@ task.spawn(function()
     end
 end)
 
+-- Expansion Section
 main:Label("Expansion.")
 main:Seperator()
 
--- Auto-Contribute
 local autofarmExpand = false
-main:Toggle("Auto-Contribute", false, function(bool)
-    autofarmExpand = bool
+main:Toggle("Auto-Contribute", false, function(state)
+    autofarmExpand = state
 end)
 
 task.spawn(function()
@@ -125,7 +126,7 @@ task.spawn(function()
                             if contribute:IsA("Frame") and contribute.Name ~= "Example" then
                                 local args = {exp.Name, contribute.Name, 1}
                                 local success, err = pcall(function()
-                                    game:GetService("ReplicatedStorage"):WaitForChild("Communication"):WaitForChild("ContributeToExpand"):FireServer(unpack(args))
+                                    game.ReplicatedStorage.Communication.ContributeToExpand:FireServer(unpack(args))
                                 end)
                                 if not success then
                                     warn("ContributeToExpand FireServer failed:", err)
@@ -140,33 +141,3 @@ task.spawn(function()
         task.wait(1)
     end
 end)
-
-
-
-local autofarmBigStone = false
-main:Toggle("Auto-Farm Big Stone", false, function(bool)
-    autofarmBigStone = bool
-end)
-
-task.spawn(function()
-    while true do
-        if autofarmBigStone then
-            local plotResources = plot:FindFirstChild("Resources")
-            if plotResources then
-                for _, r in ipairs(plotResources:GetChildren()) do
-                    if r.Name == "Big Stone" then
-                        local success, err = pcall(function()
-                            game:GetService("ReplicatedStorage"):WaitForChild("Communication"):WaitForChild("HitResource"):FireServer(r)
-                        end)
-                        if not success then
-                            warn("HitResource FireServer failed for Big Stone:", err)
-                        end
-                        break -- Only hit the first Big Stone found
-                    end
-                end
-            end
-        end
-        task.wait(0.1)
-    end
-end)
-
