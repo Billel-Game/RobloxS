@@ -4,6 +4,8 @@ local win = DiscordLib:Window("discord library")
 local serv = win:Server("Preview", "")
 local main = serv:Channel("Main")
 local event = serv:Channel("Events")
+local fish = serv:Channel("Fishing")
+local shop = serv:Channel("Shop")
 
 local Players = game:GetService("Players")
 local plr = Players.LocalPlayer
@@ -185,7 +187,7 @@ task.spawn(function()
     end
 end)
 
-event:Button("Claim All Timed Rewards", function()
+shop:Button("Claim All Timed Rewards", function()
     local rewardNames = {
         "rewardOne", "rewardTwo", "rewardThree", "rewardFour",
         "rewardFive", "rewardSix", "rewardSeven", "rewardEight",
@@ -210,7 +212,7 @@ event:Button("Claim All Timed Rewards", function()
     end
 end)
 
-event:Button("Buy Lightning Crate", function()
+shop:Button("Buy Lightning Crate", function()
     local args = {
         "Lightning Crate",
         1
@@ -230,10 +232,19 @@ event:Button("Buy Lightning Crate", function()
     end
 end)
 
+fish:Button("Teleport to Fishing Spot", function()
+    local char = game.Players.LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = CFrame.new(-553.862060546875, -1.6463816165924072, -95.60205078125)
+        print("Teleported to fishing spot.")
+    else
+        warn("Teleport failed: Character or HumanoidRootPart missing.")
+    end
+end)
 
 local autoFish = false
 
-event:Toggle("Auto-Fish", false, function(state)
+fish:Toggle("Auto-Fish", false, function(state)
     autoFish = state
 end)
 
@@ -265,13 +276,5 @@ end)
 
 
 
-event:Button("Teleport to Fishing Spot", function()
-    local char = game.Players.LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        char.HumanoidRootPart.CFrame = CFrame.new(-553.862060546875, -1.6463816165924072, -95.60205078125)
-        print("Teleported to fishing spot.")
-    else
-        warn("Teleport failed: Character or HumanoidRootPart missing.")
-    end
-end)
+
 
