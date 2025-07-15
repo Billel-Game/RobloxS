@@ -242,7 +242,6 @@ shop:Button("Buy Lightning Crate", function()
         "Lightning Crate",
         1
     }
-
     local success, err = pcall(function()
         game:GetService("ReplicatedStorage")
             :WaitForChild("Communication")
@@ -256,6 +255,27 @@ shop:Button("Buy Lightning Crate", function()
         warn("Crate purchase failed:", err)
     end
 end)
+
+
+shop:Button("Claim Shamrock Chest", function()
+    local args = {
+        "RainbowIslandShamrockChest"
+    }
+
+    local success, err = pcall(function()
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Communication")
+            :WaitForChild("RewardChestClaimRequest")
+            :FireServer(unpack(args))
+    end)
+
+    if success then
+        print("Successfully claimed Shamrock Chest!")
+    else
+        warn("Failed to claim Shamrock Chest:", err)
+    end
+end)
+
 
 -- Fishing Section
 
