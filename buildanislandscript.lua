@@ -20,133 +20,139 @@ main:Seperator()
 
 -- Auto-Farm Plot
 local autoFarmPlot = false
+local farmPlotConnection
+
 main:Toggle("Auto-Farm Plot", false, function(state)
     autoFarmPlot = state
-end)
 
-task.spawn(function()
-    while true do
-        if autoFarmPlot then
-            local plotResources = plot:FindFirstChild("Resources")
-            if plotResources then
-                for _, resource in ipairs(plotResources:GetChildren()) do
-                    local success, err = pcall(function()
-                        game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
-                    end)
-                    if not success then
-                        warn("Plot HitResource failed:", err)
+    if state then
+        farmPlotConnection = task.spawn(function()
+            while autoFarmPlot do
+                local plotResources = plot:FindFirstChild("Resources")
+                if plotResources then
+                    for _, resource in ipairs(plotResources:GetChildren()) do
+                        local success, err = pcall(function()
+                            game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+                        end)
+                        if not success then
+                            warn("Plot HitResource failed:", err)
+                        end
+                        task.wait(0.01)
                     end
-                    task.wait(0.01)
                 end
+                task.wait(0.1)
             end
-        end
-        task.wait(0.1)
+        end)
     end
 end)
 
 -- Auto-Farm Rainbow Island
 local autoFarmRainbow = false
+local rainbowConnection
+
 event:Toggle("Auto-Farm Rainbow Island", false, function(state)
     autoFarmRainbow = state
-end)
 
-task.spawn(function()
-    while true do
-        if autoFarmRainbow then
-            local rainbow = workspace:FindFirstChild("RainbowIsland")
-            if rainbow and rainbow:FindFirstChild("Resources") then
-                for _, resource in ipairs(rainbow.Resources:GetChildren()) do
-                    local success, err = pcall(function()
-                        game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
-                    end)
-                    if not success then
-                        warn("Rainbow HitResource failed:", err)
+    if state then
+        rainbowConnection = task.spawn(function()
+            while autoFarmRainbow do
+                local rainbow = workspace:FindFirstChild("RainbowIsland")
+                if rainbow and rainbow:FindFirstChild("Resources") then
+                    for _, resource in ipairs(rainbow.Resources:GetChildren()) do
+                        local success, err = pcall(function()
+                            game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+                        end)
+                        if not success then
+                            warn("Rainbow HitResource failed:", err)
+                        end
+                        task.wait(0.01)
                     end
-                    task.wait(0.01)
                 end
+                task.wait(0.1)
             end
-        end
-        task.wait(0.1)
+        end)
     end
 end)
 
+-- Auto-Farm World Tree
 local autoFarmWT = false
+local worldTreeConnection
 
 event:Toggle("Auto-Farm World Tree", false, function(state)
     autoFarmWT = state
-end)
 
-task.spawn(function()
-    while true do
-        if autoFarmWT then
-            local globalResources = workspace:FindFirstChild("GlobalResources")
-            local worldTree = globalResources and globalResources:FindFirstChild("World Tree")
+    if state then
+        worldTreeConnection = task.spawn(function()
+            while autoFarmWT do
+                local globalResources = workspace:FindFirstChild("GlobalResources")
+                local worldTree = globalResources and globalResources:FindFirstChild("World Tree")
 
-            if worldTree then
-                local success, err = pcall(function()
-                    game.ReplicatedStorage.Communication.HitResource:FireServer(worldTree)
-                end)
-
-                if not success then
-                    warn("World Tree HitResource failed:", err)
+                if worldTree then
+                    local success, err = pcall(function()
+                        game.ReplicatedStorage.Communication.HitResource:FireServer(worldTree)
+                    end)
+                    if not success then
+                        warn("World Tree HitResource failed:", err)
+                    end
                 end
+                task.wait(0.1)
             end
-        end
-        task.wait(0.1)
+        end)
     end
 end)
 
-
-
-
 -- Auto Hive Toggle
 local autohive = false
+local hiveConnection
+
 main:Toggle("Auto-Hive", false, function(state)
     autohive = state
-end)
 
-task.spawn(function()
-    while true do
-        if autohive and land then
-            for _, spot in ipairs(land:GetDescendants()) do
-                if spot:IsA("Model") and spot.Name:match("Spot") then
-                    local success, err = pcall(function()
-                        game.ReplicatedStorage.Communication.Hive:FireServer(spot.Parent.Name, spot.Name, 2)
-                    end)
-                    if not success then
-                        warn("Hive FireServer failed:", err)
+    if state then
+        hiveConnection = task.spawn(function()
+            while autohive and land do
+                for _, spot in ipairs(land:GetDescendants()) do
+                    if spot:IsA("Model") and spot.Name:match("Spot") then
+                        local success, err = pcall(function()
+                            game.ReplicatedStorage.Communication.Hive:FireServer(spot.Parent.Name, spot.Name, 2)
+                        end)
+                        if not success then
+                            warn("Hive FireServer failed:", err)
+                        end
+                        task.wait(0.01)
                     end
-                    task.wait(0.01)
                 end
+                task.wait(0.5)
             end
-        end
-        task.wait(0.5)
+        end)
     end
 end)
 
 -- Auto Harvest Toggle
 local autoharvest = false
+local harvestConnection
+
 main:Toggle("Auto-Harvest", false, function(state)
     autoharvest = state
-end)
 
-task.spawn(function()
-    while true do
-        if autoharvest then
-            local plants = plot:FindFirstChild("Plants")
-            if plants then
-                for _, crop in ipairs(plants:GetChildren()) do
-                    local success, err = pcall(function()
-                        game.ReplicatedStorage.Communication.Harvest:FireServer(crop.Name)
-                    end)
-                    if not success then
-                        warn("Harvest FireServer failed:", err)
+    if state then
+        harvestConnection = task.spawn(function()
+            while autoharvest do
+                local plants = plot:FindFirstChild("Plants")
+                if plants then
+                    for _, crop in ipairs(plants:GetChildren()) do
+                        local success, err = pcall(function()
+                            game.ReplicatedStorage.Communication.Harvest:FireServer(crop.Name)
+                        end)
+                        if not success then
+                            warn("Harvest FireServer failed:", err)
+                        end
+                        task.wait(0.01)
                     end
-                    task.wait(0.01)
                 end
+                task.wait(0.5)
             end
-        end
-        task.wait(0.5)
+        end)
     end
 end)
 
@@ -155,17 +161,17 @@ main:Label("Expansion.")
 main:Seperator()
 
 local autofarmExpand = false
+local expandConnection
+
 main:Toggle("Auto-Contribute", false, function(state)
     autofarmExpand = state
-end)
 
-task.spawn(function()
-    while true do
-        if autofarmExpand then
-            for _, exp in ipairs(expand:GetChildren()) do
-                local top = exp:FindFirstChild("Top")
-                if top then
-                    local bGui = top:FindFirstChild("BillboardGui")
+    if state then
+        expandConnection = task.spawn(function()
+            while autofarmExpand do
+                for _, exp in ipairs(expand:GetChildren()) do
+                    local top = exp:FindFirstChild("Top")
+                    local bGui = top and top:FindFirstChild("BillboardGui")
                     if bGui then
                         for _, contribute in ipairs(bGui:GetChildren()) do
                             if contribute:IsA("Frame") and contribute.Name ~= "Example" then
@@ -181,11 +187,13 @@ task.spawn(function()
                         end
                     end
                 end
+                task.wait(1)
             end
-        end
-        task.wait(1)
+        end)
     end
 end)
+
+-- Shop Buttons
 
 shop:Button("Claim All Timed Rewards", function()
     local rewardNames = {
@@ -232,6 +240,8 @@ shop:Button("Buy Lightning Crate", function()
     end
 end)
 
+-- Fishing Section
+
 fish:Button("Teleport to Fishing Spot", function()
     local char = game.Players.LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
@@ -243,19 +253,20 @@ fish:Button("Teleport to Fishing Spot", function()
 end)
 
 local autoFish = false
-local fishConnection -- store the heartbeat connection
+local fishConnection
+local RunService = game:GetService("RunService")
 local lastCast = 0
-local cooldown = 0.001
+local cooldown = 0.001 -- adjust as needed
 
 fish:Toggle("Auto-Fish", false, function(state)
     autoFish = state
 
     if state then
-        -- Enable and connect if not already connected
         if not fishConnection then
-            fishConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                if tick() - lastCast >= cooldown then
+            fishConnection = RunService.Heartbeat:Connect(function()
+                if (tick() - lastCast) >= cooldown then
                     lastCast = tick()
+
                     local args = {
                         Vector3.new(-553.862060546875, -1.6463816165924072, -95.60205078125),
                         0.42542959961479954
@@ -275,16 +286,9 @@ fish:Toggle("Auto-Fish", false, function(state)
             end)
         end
     else
-        -- Disable and disconnect
         if fishConnection then
             fishConnection:Disconnect()
             fishConnection = nil
         end
     end
 end)
-
-
-
-
-
-
