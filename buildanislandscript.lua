@@ -351,7 +351,7 @@ main:Toggle("Auto Gold Mine", false, function(state)
 end)
 
 local autoCollectGold = false
-mmain:Toggle("Auto Collect Gold", false, function(state)
+main:Toggle("Auto Collect Gold", false, function(state)
     autoCollectGold = state
 
     if state then
