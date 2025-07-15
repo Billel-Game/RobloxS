@@ -14,6 +14,7 @@ local expand = plot:WaitForChild("Expand")
 main:Label("Collection.")
 main:Seperator()
 
+-- Auto-Farm
 local autofarm = false
 main:Toggle("Auto-Farm", false, function(bool)
     autofarm = bool
@@ -24,7 +25,6 @@ task.spawn(function()
         if autofarm then
             local allResources = {}
 
-            -- Add plot resources
             local plotResources = plot:FindFirstChild("Resources")
             if plotResources then
                 for _, r in ipairs(plotResources:GetChildren()) do
@@ -32,7 +32,6 @@ task.spawn(function()
                 end
             end
 
-            -- Add RainbowIsland resources
             local rainbow = workspace:FindFirstChild("RainbowIsland")
             if rainbow and rainbow:FindFirstChild("Resources") then
                 for _, r in ipairs(rainbow.Resources:GetChildren()) do
@@ -40,7 +39,6 @@ task.spawn(function()
                 end
             end
 
-            -- Hit all found resources
             for _, r in ipairs(allResources) do
                 local success, err = pcall(function()
                     game:GetService("ReplicatedStorage"):WaitForChild("Communication"):WaitForChild("HitResource"):FireServer(r)
@@ -55,11 +53,15 @@ task.spawn(function()
     end
 end)
 
+-- Auto-Hive
 local autohive = false
 main:Toggle("Auto-Hive", false, function(bool)
     autohive = bool
-    task.spawn(function()
-        while autohive do
+end)
+
+task.spawn(function()
+    while true do
+        if autohive then
             for _, spot in ipairs(land:GetDescendants()) do
                 if spot:IsA("Model") and spot.Name:match("Spot") then
                     local success, err = pcall(function()
@@ -71,16 +73,20 @@ main:Toggle("Auto-Hive", false, function(bool)
                     task.wait(0.01)
                 end
             end
-            task.wait()
         end
-    end)
+        task.wait(0.5)
+    end
 end)
 
+-- Auto-Harvest
 local autoharvest = false
 main:Toggle("Auto-Harvest", false, function(bool)
     autoharvest = bool
-    task.spawn(function()
-        while autoharvest do
+end)
+
+task.spawn(function()
+    while true do
+        if autoharvest then
             local plants = plot:FindFirstChild("Plants")
             if plants then
                 for _, crop in pairs(plants:GetChildren()) do
@@ -93,19 +99,23 @@ main:Toggle("Auto-Harvest", false, function(bool)
                     task.wait(0.01)
                 end
             end
-            task.wait()
         end
-    end)
+        task.wait(0.5)
+    end
 end)
 
 main:Label("Expansion.")
 main:Seperator()
 
+-- Auto-Contribute
 local autofarmExpand = false
 main:Toggle("Auto-Contribute", false, function(bool)
     autofarmExpand = bool
-    task.spawn(function()
-        while autofarmExpand do
+end)
+
+task.spawn(function()
+    while true do
+        if autofarmExpand then
             for _, exp in ipairs(expand:GetChildren()) do
                 local top = exp:FindFirstChild("Top")
                 if top then
@@ -126,7 +136,7 @@ main:Toggle("Auto-Contribute", false, function(bool)
                     end
                 end
             end
-            task.wait(1)
         end
-    end)
+        task.wait(1)
+    end
 end)
