@@ -416,28 +416,36 @@ end)
 local selectedItem = "Coal Crate" -- default item
 local autoBuy = false
 
--- Dropdown
-shop:Dropdown("Select Item to Auto-Buy", {
-    "Corn Seeds",
-    "Coal Crate",
-    "Honey Bee",
-    "Busy Bee Potion",
-    "Growth Potion"
-}, function(choice)
-    selectedItem = choice
-    print("Selected item:", selectedItem)
-end)
-
 local autoBuyItems = {}
 local autoBuyMerchant = false
 
 -- Toggles for each item
 local itemList = {
+    "Corn Seed",
     "Coal Crate",
-    "Copper Crate",
-    "Lightning Crate",
-    "Bee Crate",
-    "Gem Crate"
+    "Honey Bee",
+    "Busy Bee Potion",
+    "Growth Potion",
+    "Strawberry Seeds",
+    "Autochopper Mk 1",
+    "Autominer Mk1",
+    "Tomato Seeds",
+    "Blueberry Seeds",
+    "Apple Seeds",
+    "Watermelon Seeds",
+    "Strength Potion",
+    "Resource Potion",
+    "Multicast Potion",
+    "Magic Durian Seeds",
+    "Magma Bee",
+    "Galaxy Potion",
+    "Peach Seeds",
+    "Pumpkin Seeds",
+    "Cherry Seeds",
+    "Starfruit Seeds",
+    "Mango Seeds",
+    "Goji Berry Seeds",
+    "Dragonfruit Seeds"
 }
 
 for _, itemName in ipairs(itemList) do
