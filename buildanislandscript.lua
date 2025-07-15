@@ -292,3 +292,87 @@ fish:Toggle("Auto-Fish", false, function(state)
         end
     end
 end)
+
+local craft_delay = 0.5
+
+local autoCraft = false
+main:Toggle("Auto Crafter", false, function(state)
+    autoCraft = state
+
+    if state then
+        task.spawn(function()
+            while autoCraft do
+                for _, c in pairs(plot:GetDescendants()) do
+                    if c.Name == "Crafter" then
+                        local attachment = c:FindFirstChildOfClass("Attachment")
+                        if attachment then
+                            local success, err = pcall(function()
+                                game:GetService("ReplicatedStorage")
+                                    :WaitForChild("Communication")
+                                    :WaitForChild("Craft")
+                                    :FireServer(attachment)
+                            end)
+                            if not success then
+                                warn("Auto Crafter failed:", err)
+                            end
+                        end
+                    end
+                end
+                task.wait(craft_delay)
+            end
+        end)
+    end
+end)
+
+local autoGoldMine = false
+main:Toggle("Auto Gold Mine", false, function(state)
+    autoGoldMine = state
+
+    if state then
+        task.spawn(function()
+            while autoGoldMine do
+                for _, mine in pairs(land:GetDescendants()) do
+                    if mine:IsA("Model") and mine.Name == "GoldMineModel" then
+                        local success, err = pcall(function()
+                            game:GetService("ReplicatedStorage")
+                                :WaitForChild("Communication")
+                                :WaitForChild("Goldmine")
+                                :FireServer(mine.Parent.Name, 1)
+                        end)
+                        if not success then
+                            warn("Auto Gold Mine failed:", err)
+                        end
+                    end
+                end
+                task.wait(1)
+            end
+        end)
+    end
+end)
+
+local autoCollectGold = false
+mmain:Toggle("Auto Collect Gold", false, function(state)
+    autoCollectGold = state
+
+    if state then
+        task.spawn(function()
+            while autoCollectGold do
+                for _, mine in pairs(land:GetDescendants()) do
+                    if mine:IsA("Model") and mine.Name == "GoldMineModel" then
+                        local success, err = pcall(function()
+                            game:GetService("ReplicatedStorage")
+                                :WaitForChild("Communication")
+                                :WaitForChild("Goldmine")
+                                :FireServer(mine.Parent.Name, 2)
+                        end)
+                        if not success then
+                            warn("Auto Collect Gold failed:", err)
+                        end
+                    end
+                end
+                task.wait(1)
+            end
+        end)
+    end
+end)
+
