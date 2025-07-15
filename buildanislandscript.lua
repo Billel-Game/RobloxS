@@ -209,3 +209,66 @@ event:Button("Claim All Timed Rewards", function()
         task.wait(0.1) -- slight delay for stability
     end
 end)
+
+event:Button("Buy Lightning Crate", function()
+    local args = {
+        "Lightning Crate",
+        1
+    }
+
+    local success, err = pcall(function()
+        game:GetService("ReplicatedStorage")
+            :WaitForChild("Communication")
+            :WaitForChild("PurchaseCrateRequest")
+            :FireServer(unpack(args))
+    end)
+
+    if success then
+        print("Successfully purchased Lightning Crate")
+    else
+        warn("Crate purchase failed:", err)
+    end
+end)
+
+
+local autoFish = false
+
+event:Toggle("Auto-Fish", false, function(state)
+    autoFish = state
+end)
+
+task.spawn(function()
+    while true do
+        if autoFish then
+            local args = {
+                Vector3.new(-553.862060546875, -1.6463816165924072, -95.60205078125),
+                0.42542959961479954
+            }
+
+            local success, err = pcall(function()
+                game:GetService("ReplicatedStorage")
+                    :WaitForChild("Communication")
+                    :WaitForChild("Fish")
+                    :InvokeServer(unpack(args))
+            end)
+
+            if not success then
+                warn("Auto-Fish failed:", err)
+            end
+
+            task.wait(1.5) -- adjust as needed to match cooldown
+        end
+        task.wait(0.1)
+    end
+end)
+
+event:Button("Teleport to Fishing Spot", function()
+    local char = game.Players.LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = CFrame.new(-553.862060546875, -1.6463816165924072, -95.60205078125)
+        print("Teleported to fishing spot.")
+    else
+        warn("Teleport failed: Character or HumanoidRootPart missing.")
+    end
+end)
+
