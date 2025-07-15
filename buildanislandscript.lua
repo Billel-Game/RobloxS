@@ -1,7 +1,7 @@
 local DiscordLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/discord"))()
 
 local win = DiscordLib:Window("discord library")
-local serv = win:Server("Preview", "")
+local serv = win:Server("Made by Billel", "")
 local main = serv:Channel("Main")
 local event = serv:Channel("Events")
 local fish = serv:Channel("Fishing")
@@ -243,36 +243,46 @@ fish:Button("Teleport to Fishing Spot", function()
 end)
 
 local autoFish = false
+local fishConnection -- store the heartbeat connection
+local lastCast = 0
+local cooldown = 0.001
 
 fish:Toggle("Auto-Fish", false, function(state)
     autoFish = state
-end)
 
-local RunService = game:GetService("RunService")
-local lastCast = 0
-local cooldown = 0.001 -- You can try even lower if the server allows it
+    if state then
+        -- Enable and connect if not already connected
+        if not fishConnection then
+            fishConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                if tick() - lastCast >= cooldown then
+                    lastCast = tick()
+                    local args = {
+                        Vector3.new(-553.862060546875, -1.6463816165924072, -95.60205078125),
+                        0.42542959961479954
+                    }
 
-RunService.Heartbeat:Connect(function()
-    if autoFish and (tick() - lastCast) >= cooldown then
-        lastCast = tick()
+                    local success, err = pcall(function()
+                        game:GetService("ReplicatedStorage")
+                            :WaitForChild("Communication")
+                            :WaitForChild("Fish")
+                            :InvokeServer(unpack(args))
+                    end)
 
-        local args = {
-            Vector3.new(-553.862060546875, -1.6463816165924072, -95.60205078125),
-            0.42542959961479954
-        }
-
-        local success, err = pcall(function()
-            game:GetService("ReplicatedStorage")
-                :WaitForChild("Communication")
-                :WaitForChild("Fish")
-                :InvokeServer(unpack(args))
-        end)
-
-        if not success then
-            warn("Auto-Fish failed:", err)
+                    if not success then
+                        warn("Auto-Fish failed:", err)
+                    end
+                end
+            end)
+        end
+    else
+        -- Disable and disconnect
+        if fishConnection then
+            fishConnection:Disconnect()
+            fishConnection = nil
         end
     end
 end)
+
 
 
 
