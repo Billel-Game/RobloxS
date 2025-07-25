@@ -1,5 +1,3 @@
--- Full optimized script with fixed toggles and proper task.spawn loops
-
 local DiscordLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/discord"))()
 
 local win = DiscordLib:Window("discord library")
@@ -33,7 +31,7 @@ main:Toggle("Anti AFK", false, function(state)
     end
 end)
 
--- Generalized toggle pattern
+-- Generalized toggle pattern (returns true if loop did any action)
 local function createToggle(flagName, parent, label, loopFn)
     local flag = false
     parent:Toggle(label, false, function(state)
@@ -41,8 +39,12 @@ local function createToggle(flagName, parent, label, loopFn)
         if state then
             task.spawn(function()
                 while flag do
-                    loopFn()
-                    task.wait(0.5)
+                    local didWork = loopFn()
+                    if didWork == false then
+                        task.wait(2) -- nothing done, wait longer
+                    else
+                        task.wait(0.5) -- did work, normal wait
+                    end
                 end
             end)
         end
@@ -52,64 +54,80 @@ end
 
 -- Auto-Farm Plot
 createToggle("autoFarmPlot", coll, "Auto-Farm Plot", function()
+    local didFarm = false
     local plotResources = plot:FindFirstChild("Resources")
     if plotResources then
         for _, resource in ipairs(plotResources:GetChildren()) do
             pcall(function()
                 game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+                didFarm = true
             end)
         end
     end
+    return didFarm
 end)
 
 -- Auto-Farm Rainbow Island
 createToggle("autoFarmRainbow", event, "Auto-Farm Rainbow Island", function()
+    local didFarm = false
     local rainbow = workspace:FindFirstChild("RainbowIsland")
     if rainbow and rainbow:FindFirstChild("Resources") then
         for _, resource in ipairs(rainbow.Resources:GetChildren()) do
             pcall(function()
                 game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+                didFarm = true
             end)
         end
     end
+    return didFarm
 end)
 
 -- Auto-Farm World Tree
 createToggle("autoFarmWT", event, "Auto-Farm World Tree", function()
+    local didFarm = false
     local globalResources = workspace:FindFirstChild("GlobalResources")
     local worldTree = globalResources and globalResources:FindFirstChild("World Tree")
     if worldTree then
         pcall(function()
             game.ReplicatedStorage.Communication.HitResource:FireServer(worldTree)
+            didFarm = true
         end)
     end
+    return didFarm
 end)
 
 -- Auto-Hive
 createToggle("autohive", coll, "Auto-Hive", function()
+    local didFarm = false
     for _, spot in ipairs(land:GetDescendants()) do
         if spot:IsA("Model") and spot.Name:match("Spot") then
             pcall(function()
                 game.ReplicatedStorage.Communication.Hive:FireServer(spot.Parent.Name, spot.Name, 2)
+                didFarm = true
             end)
         end
     end
+    return didFarm
 end)
 
 -- Auto-Harvest
 createToggle("autoharvest", coll, "Auto-Harvest", function()
+    local didFarm = false
     local plants = plot:FindFirstChild("Plants")
     if plants then
         for _, crop in ipairs(plants:GetChildren()) do
             pcall(function()
                 game.ReplicatedStorage.Communication.Harvest:FireServer(crop.Name)
+                didFarm = true
             end)
         end
     end
+    return didFarm
 end)
 
 -- Auto-Contribute Expansion
 createToggle("autofarmExpand", main, "Auto-Contribute", function()
+    local didFarm = false
     for _, exp in ipairs(expand:GetChildren()) do
         local top = exp:FindFirstChild("Top")
         local bGui = top and top:FindFirstChild("BillboardGui")
@@ -119,11 +137,13 @@ createToggle("autofarmExpand", main, "Auto-Contribute", function()
                     local args = {exp.Name, contribute.Name, 1}
                     pcall(function()
                         game.ReplicatedStorage.Communication.ContributeToExpand:FireServer(unpack(args))
+                        didFarm = true
                     end)
                 end
             end
         end
     end
+    return didFarm
 end)
 
 -- Teleport to Fishing Spot
@@ -163,38 +183,47 @@ end)
 
 -- Auto-Crafter
 createToggle("autoCraft", main, "Auto Crafter", function()
+    local didCraft = false
     for _, c in pairs(plot:GetDescendants()) do
         if c.Name == "Crafter" then
             local attachment = c:FindFirstChildOfClass("Attachment")
             if attachment then
                 pcall(function()
                     game.ReplicatedStorage.Communication.Craft:FireServer(attachment)
+                    didCraft = true
                 end)
             end
         end
     end
+    return didCraft
 end)
 
 -- Auto Gold Mine
 createToggle("autoGoldMine", coll, "Auto Gold Mine", function()
+    local didMine = false
     for _, mine in pairs(land:GetDescendants()) do
         if mine:IsA("Model") and mine.Name == "GoldMineModel" then
             pcall(function()
                 game.ReplicatedStorage.Communication.Goldmine:FireServer(mine.Parent.Name, 1)
+                didMine = true
             end)
         end
     end
+    return didMine
 end)
 
 -- Auto Collect Gold
 createToggle("autoCollectGold", coll, "Auto Collect Gold", function()
+    local didCollect = false
     for _, mine in pairs(land:GetDescendants()) do
         if mine:IsA("Model") and mine.Name == "GoldMineModel" then
             pcall(function()
                 game.ReplicatedStorage.Communication.Goldmine:FireServer(mine.Parent.Name, 2)
+                didCollect = true
             end)
         end
     end
+    return didCollect
 end)
 
 -- Timed Rewards Button
@@ -278,7 +307,6 @@ for category, items in pairs(categories) do
         end
     end)
 end
-
 
 -- Master Auto-Buy Toggle
 shop:Toggle("Auto-Buy Selected Items", false, function(state)
