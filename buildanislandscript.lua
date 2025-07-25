@@ -31,33 +31,39 @@ main:Toggle("Anti AFK", false, function(state)
     end
 end)
 
--- Generalized toggle pattern (returns true if loop did any action)
-local function createToggle(flagName, parent, label, loopFn)
+-- Max hits per loop to reduce spam
+local MAX_HITS_PER_LOOP = 3
+
+-- Generalized toggle pattern with loopFn returning if it did work or not
+local function createToggle(parent, label, loopFn)
     local flag = false
     parent:Toggle(label, false, function(state)
         flag = state
         if state then
             task.spawn(function()
                 while flag do
-                    local didWork = loopFn()
-                    if didWork == false then
-                        task.wait(2) -- nothing done, wait longer
+                    local didWork = false
+                    local ok, result = pcall(loopFn)
+                    if ok then
+                        didWork = result
                     else
-                        task.wait(0.5) -- did work, normal wait
+                        warn("Error in "..label..":", result)
+                    end
+                    if didWork then
+                        task.wait(0.5)
+                    else
+                        task.wait(2) -- wait longer if nothing done to reduce load
                     end
                 end
             end)
         end
     end)
-    return function() return flag end
 end
 
-local MAX_HITS_PER_LOOP = 3
-
 -- Auto-Farm Plot
-createToggle("autoFarmPlot", coll, "Auto-Farm Plot", function()
-    local didFarm = false
+createToggle(coll, "Auto-Farm Plot", function()
     local hits = 0
+    local didFarm = false
     local plotResources = plot:FindFirstChild("Resources")
     if plotResources then
         for _, resource in ipairs(plotResources:GetChildren()) do
@@ -75,9 +81,9 @@ createToggle("autoFarmPlot", coll, "Auto-Farm Plot", function()
 end)
 
 -- Auto-Farm Rainbow Island
-createToggle("autoFarmRainbow", event, "Auto-Farm Rainbow Island", function()
-    local didFarm = false
+createToggle(event, "Auto-Farm Rainbow Island", function()
     local hits = 0
+    local didFarm = false
     local rainbow = workspace:FindFirstChild("RainbowIsland")
     if rainbow and rainbow:FindFirstChild("Resources") then
         for _, resource in ipairs(rainbow.Resources:GetChildren()) do
@@ -95,7 +101,7 @@ createToggle("autoFarmRainbow", event, "Auto-Farm Rainbow Island", function()
 end)
 
 -- Auto-Farm World Tree
-createToggle("autoFarmWT", event, "Auto-Farm World Tree", function()
+createToggle(event, "Auto-Farm World Tree", function()
     local didFarm = false
     local globalResources = workspace:FindFirstChild("GlobalResources")
     local worldTree = globalResources and globalResources:FindFirstChild("World Tree")
@@ -109,9 +115,9 @@ createToggle("autoFarmWT", event, "Auto-Farm World Tree", function()
 end)
 
 -- Auto-Hive
-createToggle("autohive", coll, "Auto-Hive", function()
-    local didFarm = false
+createToggle(coll, "Auto-Hive", function()
     local hits = 0
+    local didFarm = false
     if land then
         for _, spot in ipairs(land:GetDescendants()) do
             if spot:IsA("Model") and spot.Name:match("Spot") and spot.Parent then
@@ -128,9 +134,9 @@ createToggle("autohive", coll, "Auto-Hive", function()
 end)
 
 -- Auto-Harvest
-createToggle("autoharvest", coll, "Auto-Harvest", function()
-    local didFarm = false
+createToggle(coll, "Auto-Harvest", function()
     local hits = 0
+    local didFarm = false
     local plants = plot:FindFirstChild("Plants")
     if plants then
         for _, crop in ipairs(plants:GetChildren()) do
@@ -148,7 +154,7 @@ createToggle("autoharvest", coll, "Auto-Harvest", function()
 end)
 
 -- Auto-Contribute Expansion
-createToggle("autofarmExpand", main, "Auto-Contribute", function()
+createToggle(main, "Auto-Contribute", function()
     local didFarm = false
     for _, exp in ipairs(expand:GetChildren()) do
         local top = exp:FindFirstChild("Top")
@@ -181,7 +187,7 @@ local autoFish = false
 local fishConnection
 local RunService = game:GetService("RunService")
 local lastCast = 0
-local cooldown = 0.01
+local cooldown = 0.005 -- increase cooldown to reduce spam
 fish:Toggle("Auto-Fish", false, function(state)
     autoFish = state
     if state then
@@ -204,7 +210,7 @@ fish:Toggle("Auto-Fish", false, function(state)
 end)
 
 -- Auto-Crafter
-createToggle("autoCraft", main, "Auto Crafter", function()
+createToggle(main, "Auto Crafter", function()
     local didCraft = false
     for _, c in pairs(plot:GetDescendants()) do
         if c.Name == "Crafter" then
@@ -221,9 +227,9 @@ createToggle("autoCraft", main, "Auto Crafter", function()
 end)
 
 -- Auto Gold Mine
-createToggle("autoGoldMine", coll, "Auto Gold Mine", function()
-    local didMine = false
+createToggle(coll, "Auto Gold Mine", function()
     local hits = 0
+    local didMine = false
     if land then
         for _, mine in pairs(land:GetDescendants()) do
             if mine:IsA("Model") and mine.Name == "GoldMineModel" and mine.Parent then
@@ -240,9 +246,9 @@ createToggle("autoGoldMine", coll, "Auto Gold Mine", function()
 end)
 
 -- Auto Collect Gold
-createToggle("autoCollectGold", coll, "Auto Collect Gold", function()
-    local didCollect = false
+createToggle(coll, "Auto Collect Gold", function()
     local hits = 0
+    local didCollect = false
     if land then
         for _, mine in pairs(land:GetDescendants()) do
             if mine:IsA("Model") and mine.Name == "GoldMineModel" and mine.Parent then
