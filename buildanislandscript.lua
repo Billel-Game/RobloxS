@@ -52,16 +52,23 @@ local function createToggle(flagName, parent, label, loopFn)
     return function() return flag end
 end
 
+local MAX_HITS_PER_LOOP = 3
+
 -- Auto-Farm Plot
 createToggle("autoFarmPlot", coll, "Auto-Farm Plot", function()
     local didFarm = false
+    local hits = 0
     local plotResources = plot:FindFirstChild("Resources")
     if plotResources then
         for _, resource in ipairs(plotResources:GetChildren()) do
-            pcall(function()
-                game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+            if resource and resource.Parent then
+                pcall(function()
+                    game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+                end)
                 didFarm = true
-            end)
+                hits = hits + 1
+                if hits >= MAX_HITS_PER_LOOP then break end
+            end
         end
     end
     return didFarm
@@ -70,13 +77,18 @@ end)
 -- Auto-Farm Rainbow Island
 createToggle("autoFarmRainbow", event, "Auto-Farm Rainbow Island", function()
     local didFarm = false
+    local hits = 0
     local rainbow = workspace:FindFirstChild("RainbowIsland")
     if rainbow and rainbow:FindFirstChild("Resources") then
         for _, resource in ipairs(rainbow.Resources:GetChildren()) do
-            pcall(function()
-                game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+            if resource and resource.Parent then
+                pcall(function()
+                    game.ReplicatedStorage.Communication.HitResource:FireServer(resource)
+                end)
                 didFarm = true
-            end)
+                hits = hits + 1
+                if hits >= MAX_HITS_PER_LOOP then break end
+            end
         end
     end
     return didFarm
@@ -87,11 +99,11 @@ createToggle("autoFarmWT", event, "Auto-Farm World Tree", function()
     local didFarm = false
     local globalResources = workspace:FindFirstChild("GlobalResources")
     local worldTree = globalResources and globalResources:FindFirstChild("World Tree")
-    if worldTree then
+    if worldTree and worldTree.Parent then
         pcall(function()
             game.ReplicatedStorage.Communication.HitResource:FireServer(worldTree)
-            didFarm = true
         end)
+        didFarm = true
     end
     return didFarm
 end)
@@ -99,12 +111,17 @@ end)
 -- Auto-Hive
 createToggle("autohive", coll, "Auto-Hive", function()
     local didFarm = false
-    for _, spot in ipairs(land:GetDescendants()) do
-        if spot:IsA("Model") and spot.Name:match("Spot") then
-            pcall(function()
-                game.ReplicatedStorage.Communication.Hive:FireServer(spot.Parent.Name, spot.Name, 2)
+    local hits = 0
+    if land then
+        for _, spot in ipairs(land:GetDescendants()) do
+            if spot:IsA("Model") and spot.Name:match("Spot") and spot.Parent then
+                pcall(function()
+                    game.ReplicatedStorage.Communication.Hive:FireServer(spot.Parent.Name, spot.Name, 2)
+                end)
                 didFarm = true
-            end)
+                hits = hits + 1
+                if hits >= MAX_HITS_PER_LOOP then break end
+            end
         end
     end
     return didFarm
@@ -113,13 +130,18 @@ end)
 -- Auto-Harvest
 createToggle("autoharvest", coll, "Auto-Harvest", function()
     local didFarm = false
+    local hits = 0
     local plants = plot:FindFirstChild("Plants")
     if plants then
         for _, crop in ipairs(plants:GetChildren()) do
-            pcall(function()
-                game.ReplicatedStorage.Communication.Harvest:FireServer(crop.Name)
+            if crop and crop.Parent then
+                pcall(function()
+                    game.ReplicatedStorage.Communication.Harvest:FireServer(crop.Name)
+                end)
                 didFarm = true
-            end)
+                hits = hits + 1
+                if hits >= MAX_HITS_PER_LOOP then break end
+            end
         end
     end
     return didFarm
@@ -137,8 +159,8 @@ createToggle("autofarmExpand", main, "Auto-Contribute", function()
                     local args = {exp.Name, contribute.Name, 1}
                     pcall(function()
                         game.ReplicatedStorage.Communication.ContributeToExpand:FireServer(unpack(args))
-                        didFarm = true
                     end)
+                    didFarm = true
                 end
             end
         end
@@ -190,8 +212,8 @@ createToggle("autoCraft", main, "Auto Crafter", function()
             if attachment then
                 pcall(function()
                     game.ReplicatedStorage.Communication.Craft:FireServer(attachment)
-                    didCraft = true
                 end)
+                didCraft = true
             end
         end
     end
@@ -201,12 +223,17 @@ end)
 -- Auto Gold Mine
 createToggle("autoGoldMine", coll, "Auto Gold Mine", function()
     local didMine = false
-    for _, mine in pairs(land:GetDescendants()) do
-        if mine:IsA("Model") and mine.Name == "GoldMineModel" then
-            pcall(function()
-                game.ReplicatedStorage.Communication.Goldmine:FireServer(mine.Parent.Name, 1)
+    local hits = 0
+    if land then
+        for _, mine in pairs(land:GetDescendants()) do
+            if mine:IsA("Model") and mine.Name == "GoldMineModel" and mine.Parent then
+                pcall(function()
+                    game.ReplicatedStorage.Communication.Goldmine:FireServer(mine.Parent.Name, 1)
+                end)
                 didMine = true
-            end)
+                hits = hits + 1
+                if hits >= MAX_HITS_PER_LOOP then break end
+            end
         end
     end
     return didMine
@@ -215,12 +242,17 @@ end)
 -- Auto Collect Gold
 createToggle("autoCollectGold", coll, "Auto Collect Gold", function()
     local didCollect = false
-    for _, mine in pairs(land:GetDescendants()) do
-        if mine:IsA("Model") and mine.Name == "GoldMineModel" then
-            pcall(function()
-                game.ReplicatedStorage.Communication.Goldmine:FireServer(mine.Parent.Name, 2)
+    local hits = 0
+    if land then
+        for _, mine in pairs(land:GetDescendants()) do
+            if mine:IsA("Model") and mine.Name == "GoldMineModel" and mine.Parent then
+                pcall(function()
+                    game.ReplicatedStorage.Communication.Goldmine:FireServer(mine.Parent.Name, 2)
+                end)
                 didCollect = true
-            end)
+                hits = hits + 1
+                if hits >= MAX_HITS_PER_LOOP then break end
+            end
         end
     end
     return didCollect
@@ -277,7 +309,6 @@ end)
 local autoBuyItems = {}
 local autoBuyMerchant = false
 
--- Option 2: Category Buttons with Toggles
 local categories = {
     Seeds = {"Corn Seed", "Strawberry Seeds", "Tomato Seeds", "Apple Seeds", "Blueberry Seeds", "Watermelon Seeds", "Peach Seeds", "Pumpkin Seeds", "Cherry Seeds", "Starfruit Seeds", "Mango Seeds", "Goji Berry Seeds", "Dragonfruit Seeds", "Magic Durian Seeds"},
     Potions = {"Busy Bee Potion", "Growth Potion", "Strength Potion", "Resource Potion", "Multicast Potion", "Galaxy Potion"},
@@ -291,13 +322,11 @@ for category, items in pairs(categories) do
 
     shop:Button("Category: " .. category, function()
         if #categoryToggles[category] > 0 then
-            -- Remove existing toggles
             for _, toggle in ipairs(categoryToggles[category]) do
                 toggle:Destroy()
             end
             categoryToggles[category] = {}
         else
-            -- Add toggles
             for _, item in ipairs(items) do
                 local toggle = shop:Toggle("Auto-Buy: " .. item, autoBuyItems[item] or false, function(state)
                     autoBuyItems[item] = state
@@ -308,7 +337,6 @@ for category, items in pairs(categories) do
     end)
 end
 
--- Master Auto-Buy Toggle
 shop:Toggle("Auto-Buy Selected Items", false, function(state)
     autoBuyMerchant = state
     if state then
