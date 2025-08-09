@@ -51,7 +51,7 @@ Section:CreateToggle({
                     -- First remote
                     game:GetService("ReplicatedStorage"):WaitForChild("PoopChargeStart"):FireServer()
                     -- Second remote with args
-                    local args = { 10 }
+                    local args = { 1 }
                     game:GetService("ReplicatedStorage"):WaitForChild("PoopEvent"):FireServer(unpack(args))
                     task.wait(1) -- adjust delay if needed
                 end
