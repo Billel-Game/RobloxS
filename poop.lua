@@ -28,28 +28,37 @@
     local Pages = UI:CreatePage("Main 🏠")
 
     local Section = Pages:CreateSection("Main (Toggles)")
-    local autoPoop = false
+  local autoPoop = false
 
-    Section:CreateToggle({
-        Name = "💩 Auto Poop";
-        Flag = "AutoPoop";
-        Default = false;
-        Callback = function(state)
-            autoPoop = state
-            if state then
-                task.spawn(function()
-                    while autoPoop do
-                        -- First remote
-                        game:GetService("ReplicatedStorage"):WaitForChild("PoopChargeStart"):FireServer()
-                        -- Second remote with args
-                        local args = { 1 }
-                        game:GetService("ReplicatedStorage"):WaitForChild("PoopEvent"):FireServer(unpack(args))
-                        task.wait(1) -- adjust delay if needed
+Section:CreateToggle({
+    Name = "💩 Auto Poop";
+    Flag = "AutoPoop";
+    Default = false;
+    Callback = function(state)
+        autoPoop = state
+        if state then
+            task.spawn(function()
+                while autoPoop do
+                    -- Noclip: set CanCollide false for all character parts
+                    local char = game.Players.LocalPlayer.Character
+                    if char then
+                        for _, part in ipairs(char:GetDescendants()) do
+                            if part:IsA("BasePart") then
+                                part.CanCollide = false
+                            end
+                        end
                     end
-                end)
-            end
-        end;
-    })
+                    -- First remote
+                    game:GetService("ReplicatedStorage"):WaitForChild("PoopChargeStart"):FireServer()
+                    -- Second remote with args
+                    local args = { 1 }
+                    game:GetService("ReplicatedStorage"):WaitForChild("PoopEvent"):FireServer(unpack(args))
+                    task.wait(1) -- adjust delay if needed
+                end
+            end)
+        end
+    end;
+})
 
     Section:CreateButton({
         Name = "💰 Sell Inventory";
