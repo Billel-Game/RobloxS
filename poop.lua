@@ -59,6 +59,46 @@ Section:CreateToggle({
         end
     end;
 })
+-- Add this after your other toggles/buttons
+
+local eggList = {
+    "Common Egg",
+    "Rare Egg",
+    "Epic Egg",
+    "Legendary Egg"
+    -- Add more egg names as needed
+}
+
+local selectedEgg = eggList[1]
+local autoBuy = false
+
+Section:CreateDropdown({
+    Name = "🥚 Select Egg";
+    Flag = "EggDropdown";
+    List = eggList;
+    Default = selectedEgg;
+    Callback = function(choice)
+        selectedEgg = choice
+    end;
+})
+
+Section:CreateToggle({
+    Name = "🤖 AutoBuy Egg";
+    Flag = "AutoBuyEgg";
+    Default = false;
+    Callback = function(state)
+        autoBuy = state
+        if state then
+            task.spawn(function()
+                while autoBuy do
+                    local args = { selectedEgg }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("PetEggShop:RequestPurchase"):InvokeServer(unpack(args))
+                    task.wait(1) -- adjust delay as needed
+                end
+            end)
+        end
+    end;
+})
 
     Section:CreateButton({
         Name = "💰 Sell Inventory";
