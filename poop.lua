@@ -1,4 +1,4 @@
-local omni = loadstring(game:HttpGet("https://raw.githubusercontent.com/TweedLeak-LeakScripts/FriseX/main/UI-Library"))()
+local omni = loadstring(game:HttpGet("https://raw.githubusercontent.com/Billel-Game/RobloxS/refs/heads/main/uilib.lua"))()
 
 local UI = omni.new({
     Name = "🔥 Fury Scripts 🔥";
