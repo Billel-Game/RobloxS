@@ -115,19 +115,38 @@ Section:CreateToggle({
 
     local Section = Pages2:CreateSection("Gear Shop (Auto Buy)")
 
-local autoGearShop = false
+local autoLaxative = false
 Section:CreateToggle({
-    Name = "⚙️ Auto Buy Gear";
-    Flag = "AutoGearShop";
+    Name = "⚙️ Auto Buy Laxative";
+    Flag = "AutoLaxative";
     Default = false;
     Callback = function(state)
-        autoGearShop = state
+        autoLaxative = state
         if state then
             task.spawn(function()
-                while autoGearShop do
-                    -- Replace "Gear Name" with the actual gear you want to buy
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("GearShop: RequestPurchase"):InvokeServer("Gear Name")
-                    task.wait(5) -- Adjust delay as needed
+                while autoLaxative do
+                    local args = { "Laxative" }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("GearShop: RequestPurchase"):InvokeServer(unpack(args))
+                    task.wait(5)
+                end
+            end)
+        end
+    end;
+})
+
+local autoPills = false
+Section:CreateToggle({
+    Name = "⚙️ Auto Buy Pills";
+    Flag = "AutoPills";
+    Default = false;
+    Callback = function(state)
+        autoPills = state
+        if state then
+            task.spawn(function()
+                while autoPills do
+                    local args = { "Pills" }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("GearShop: RequestPurchase"):InvokeServer(unpack(args))
+                    task.wait(5)
                 end
             end)
         end
