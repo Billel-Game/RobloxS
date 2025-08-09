@@ -1,35 +1,84 @@
-    local omni = loadstring(game:HttpGet("https://raw.githubusercontent.com/Billel-Game/RobloxS/refs/heads/main/uilib.lua"))()
+-- Key Prompt UI
+local correctKey = "123" -- Change this to your desired key
+local player = game.Players.LocalPlayer
 
-    local UI = omni.new({
-        Name = "🔥 Fury Scripts 🔥";
-        Credit = "Created by Billel";
-        Color = Color3.fromRGB(122,28,187);
-        Bind = "LeftControl";
-        UseLoader = false;
-        FullName = "";
-        CheckKey = function(inputtedKey)
-            return inputtedKey=="123"
-        end;
-        Discord = "IDI NAHUY";
-    })
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "KeyPrompt"
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
-    local notifSound = Instance.new("Sound",workspace)
-    notifSound.PlaybackSpeed = 1
-    notifSound.Volume = 0.35
-    notifSound.SoundId = "rbxassetid://5829559206"
-    notifSound.PlayOnRemove = true
-    notifSound:Destroy()
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 120)
+frame.Position = UDim2.new(0.5, -150, 0.5, -60)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
 
-    UI:Notify({
+local label = Instance.new("TextLabel")
+label.Size = UDim2.new(1, 0, 0, 40)
+label.Position = UDim2.new(0, 0, 0, 0)
+label.BackgroundTransparency = 1
+label.Text = "Enter Key:"
+label.TextColor3 = Color3.new(1,1,1)
+label.Font = Enum.Font.SourceSansBold
+label.TextSize = 24
+label.Parent = frame
+
+local textBox = Instance.new("TextBox")
+textBox.Size = UDim2.new(1, -20, 0, 40)
+textBox.Position = UDim2.new(0, 10, 0, 50)
+textBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+textBox.TextColor3 = Color3.new(1,1,1)
+textBox.Font = Enum.Font.SourceSans
+textBox.TextSize = 22
+textBox.PlaceholderText = "Paste your key here"
+textBox.Parent = frame
+
+local entered = false
+
+textBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed and textBox.Text == correctKey then
+        entered = true
+        screenGui:Destroy()
+    elseif enterPressed then
+        textBox.Text = ""
+        label.Text = "Wrong Key! Try again:"
+    end
+end)
+
+while not entered do
+    task.wait()
+end
+
+-- Main script starts here (keep only ONE copy of your UI code below this line)
+local omni = loadstring(game:HttpGet("https://raw.githubusercontent.com/Billel-Game/RobloxS/refs/heads/main/uilib.lua"))()
+
+local UI = omni.new({
+    Name = "🔥 Fury Scripts 🔥";
+    Credit = "Created by Billel";
+    Color = Color3.fromRGB(122,28,187);
+    Bind = "LeftControl";
+    UseLoader = false;
+    FullName = "";
+    -- You can remove CheckKey now, the prompt handles it
+    Discord = "IDI NAHUY";
+})
+
+local notifSound = Instance.new("Sound",workspace)
+notifSound.PlaybackSpeed = 1
+notifSound.Volume = 0.35
+notifSound.SoundId = "rbxassetid://5829559206"
+notifSound.PlayOnRemove = true
+notifSound:Destroy()
+
+UI:Notify({
     Title = "Welcome!";
     Content = "Toggle Hub 'LeftControl'";
-    })
+})
 
-    local Pages = UI:CreatePage("Main 🏠")
+local Pages = UI:CreatePage("Main 🏠")
+local Section = Pages:CreateSection("Main (Toggles)")
 
-    local Section = Pages:CreateSection("Main (Toggles)")
-  local autoPoop = false
-
+local autoPoop = false
 Section:CreateToggle({
     Name = "💩 Auto Poop";
     Flag = "AutoPoop";
@@ -39,7 +88,6 @@ Section:CreateToggle({
         if state then
             task.spawn(function()
                 while autoPoop do
-                    -- Noclip: set CanCollide false for all character parts
                     local char = game.Players.LocalPlayer.Character
                     if char then
                         for _, part in ipairs(char:GetDescendants()) do
@@ -48,46 +96,35 @@ Section:CreateToggle({
                             end
                         end
                     end
-                    -- First remote
                     game:GetService("ReplicatedStorage"):WaitForChild("PoopChargeStart"):FireServer()
-                    -- Second remote with args
                     local args = { 1 }
                     game:GetService("ReplicatedStorage"):WaitForChild("PoopEvent"):FireServer(unpack(args))
-                    task.wait(1) -- adjust delay if needed
+                    task.wait(1)
                 end
             end)
         end
     end;
 })
 
-    Section:CreateButton({
-        Name = "💰 Sell Inventory";
-        Callback = function()
-            game:GetService("ReplicatedStorage"):WaitForChild("Sell_Inventory"):FireServer()
-        end;
-    })
-
-    local autoSell = false
-
-    Section:CreateToggle({
-        Name = "💰 Auto Sell Inventory";
-        Flag = "AutoSellInventory";
-        Default = false;
-        Callback = function(state)
-            autoSell = state
-            if state then
-                task.spawn(function()
-                    while autoSell do
-                        game:GetService("ReplicatedStorage"):WaitForChild("Sell_Inventory"):FireServer()
-                        task.wait(5)
-                    end
-                end)
-            end
-        end;
-    })
+local autoSell = false
+Section:CreateToggle({
+    Name = "💰 Auto Sell Inventory";
+    Flag = "AutoSellInventory";
+    Default = false;
+    Callback = function(state)
+        autoSell = state
+        if state then
+            task.spawn(function()
+                while autoSell do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Sell_Inventory"):FireServer()
+                    task.wait(5)
+                end
+            end)
+        end
+    end;
+})
 
 local autoQuest = false
-
 Section:CreateToggle({
     Name = "Auto Monkey Quest 🦧";
     Flag = "AutoQuest";
@@ -111,13 +148,13 @@ Section:CreateToggle({
         end
     end;
 })
-    local Pages2 = UI:CreatePage("Shop 💲")
 
-    local Section = Pages2:CreateSection("Gear Shop (Auto Buy)")
+local Pages2 = UI:CreatePage("Shop 💲")
+local Section2 = Pages2:CreateSection("Gear Shop (Auto Buy)")
 
 local autoLaxative = false
-Section:CreateToggle({
-    Name = "⚙️ Auto Buy Laxative";
+Section2:CreateToggle({
+    Name = "💰 Auto Buy Laxative";
     Flag = "AutoLaxative";
     Default = false;
     Callback = function(state)
@@ -135,8 +172,8 @@ Section:CreateToggle({
 })
 
 local autoPills = false
-Section:CreateToggle({
-    Name = "⚙️ Auto Buy Pills";
+Section2:CreateToggle({
+    Name = "💰 Auto Buy Pills";
     Flag = "AutoPills";
     Default = false;
     Callback = function(state)
@@ -154,8 +191,8 @@ Section:CreateToggle({
 })
 
 local autoToxic = false
-Section:CreateToggle({
-    Name = "⚙️ Auto Buy Toxic Potion";
+Section2:CreateToggle({
+    Name = "💰 Auto Buy Toxic Potion";
     Flag = "autoToxic";
     Default = false;
     Callback = function(state)
@@ -173,8 +210,8 @@ Section:CreateToggle({
 })
 
 local autoWaiste = false
-Section:CreateToggle({
-    Name = "⚙️ Auto Buy Nuclear Waiste";
+Section2:CreateToggle({
+    Name = "💰 Auto Buy Nuclear Waiste";
     Flag = "autoWaiste";
     Default = false;
     Callback = function(state)
@@ -190,11 +227,28 @@ Section:CreateToggle({
         end
     end;
 })
-   local Section = Pages2:CreateSection("Egg Shop (Auto Buy)")
 
-    local autoCommonEgg = false
-Section:CreateToggle({
-    Name = "🥚 Auto Open Common Egg";
+local Section3 = Pages2:CreateSection("Egg Shop (Auto Buy)")
+local autoLegendaryEgg = false
+Section3:CreateToggle({
+    Name = "🥚 Auto Buy Legendary Egg";
+    Flag = "AutoLegendaryEgg";
+    Default = false;
+    Callback = function(state)
+        autoLegendaryEgg = state
+        if state then
+            task.spawn(function()
+                while autoLegendaryEgg do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("PetEggShop:RequestPurchase"):InvokeServer("Legendary Egg")
+                    task.wait(5)
+                end
+            end)
+        end
+    end;
+})
+local autoCommonEgg = false
+Section3:CreateToggle({
+    Name = "🥚 Auto Buy Common Egg";
     Flag = "AutoCommonEgg";
     Default = false;
     Callback = function(state)
@@ -210,20 +264,3 @@ Section:CreateToggle({
     end;
 })
 
-local autoLegendaryEgg = false
-Section:CreateToggle({
-    Name = "🌟 Auto Open Legendary Egg";
-    Flag = "AutoLegendaryEgg";
-    Default = false;
-    Callback = function(state)
-        autoLegendaryEgg = state
-        if state then
-            task.spawn(function()
-                while autoLegendaryEgg do
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("PetEggShop:RequestPurchase"):InvokeServer("Legendary Egg")
-                    task.wait(5)
-                end
-            end)
-        end
-    end;
-})
