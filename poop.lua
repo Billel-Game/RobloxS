@@ -59,43 +59,6 @@ Section:CreateToggle({
         end
     end;
 })
--- Add this after your other toggles/buttons
-
-local eggList = {
-    "Common Egg",
-    "Legendary Egg"
-}
-
-local selectedEgg = eggList[1]
-local autoBuy = false
-
-Section:CreateDropdown({
-    Name = "🥚 Select Egg";
-    Flag = "EggDropdown";
-    List = eggList;
-    Default = selectedEgg;
-    Callback = function(choice)
-        selectedEgg = choice
-    end;
-})
-
-Section:CreateToggle({
-    Name = "🤖 AutoBuy Egg";
-    Flag = "AutoBuyEgg";
-    Default = false;
-    Callback = function(state)
-        autoBuy = state
-        if state then
-            task.spawn(function()
-                while autoBuy do
-                    local args = { selectedEgg }
-                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("PetEggShop:RequestPurchase"):InvokeServer(unpack(args))
-                    task.wait(1) -- adjust delay as needed
-                end
-            end)
-        end
-    end;
-})
 
     Section:CreateButton({
         Name = "💰 Sell Inventory";
@@ -148,27 +111,62 @@ Section:CreateToggle({
         end
     end;
 })
-    local Pages2 = UI:CreatePage("Remote Spy 🕵️")
+    local Pages2 = UI:CreatePage("Shop 💲")
 
-    local Section = Pages2:CreateSection("Teleport")
+    local Section = Pages2:CreateSection("Gear Shop (Auto Buy)")
 
-    Section:CreateButton({
-        Name = "🏠 Home";
-        Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 100, 0)
-        end;
-    })
+local autoGearShop = false
+Section:CreateToggle({
+    Name = "⚙️ Auto Buy Gear";
+    Flag = "AutoGearShop";
+    Default = false;
+    Callback = function(state)
+        autoGearShop = state
+        if state then
+            task.spawn(function()
+                while autoGearShop do
+                    -- Replace "Gear Name" with the actual gear you want to buy
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("GearShop: RequestPurchase"):InvokeServer("Gear Name")
+                    task.wait(5) -- Adjust delay as needed
+                end
+            end)
+        end
+    end;
+})
+   local Section = Pages2:CreateSection("Egg Shop (Auto Buy)")
 
-    Section:CreateButton({
-        Name = "🌍 Spawn";
-        Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0)
-        end;
-    })
+    local autoCommonEgg = false
+Section:CreateToggle({
+    Name = "🥚 Auto Open Common Egg";
+    Flag = "AutoCommonEgg";
+    Default = false;
+    Callback = function(state)
+        autoCommonEgg = state
+        if state then
+            task.spawn(function()
+                while autoCommonEgg do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("PetEggShop:RequestPurchase"):InvokeServer("Common Egg")
+                    task.wait(5)
+                end
+            end)
+        end
+    end;
+})
 
-    Section:CreateButton({
-        Name = "🏢 Shop";
-        Callback = function()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(100, 0, 100)
-        end;
-    })
+local autoLegendaryEgg = false
+Section:CreateToggle({
+    Name = "🌟 Auto Open Legendary Egg";
+    Flag = "AutoLegendaryEgg";
+    Default = false;
+    Callback = function(state)
+        autoLegendaryEgg = state
+        if state then
+            task.spawn(function()
+                while autoLegendaryEgg do
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("PetEggShop:RequestPurchase"):InvokeServer("Legendary Egg")
+                    task.wait(5)
+                end
+            end)
+        end
+    end;
+})
