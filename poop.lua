@@ -63,10 +63,7 @@ Section:CreateToggle({
 
 local eggList = {
     "Common Egg",
-    "Rare Egg",
-    "Epic Egg",
     "Legendary Egg"
-    -- Add more egg names as needed
 }
 
 local selectedEgg = eggList[1]
