@@ -152,6 +152,44 @@ Section:CreateToggle({
         end
     end;
 })
+
+local autoToxic = false
+Section:CreateToggle({
+    Name = "⚙️ Auto Buy Toxic Potion";
+    Flag = "autoToxic";
+    Default = false;
+    Callback = function(state)
+        autoToxic = state
+        if state then
+            task.spawn(function()
+                while autoToxic do
+                    local args = { "ToxicPotion" }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("GearShop: RequestPurchase"):InvokeServer(unpack(args))
+                    task.wait(5)
+                end
+            end)
+        end
+    end;
+})
+
+local autoWaiste = false
+Section:CreateToggle({
+    Name = "⚙️ Auto Buy Nuclear Waiste";
+    Flag = "autoWaiste";
+    Default = false;
+    Callback = function(state)
+        autoWaiste = state
+        if state then
+            task.spawn(function()
+                while autoWaiste do
+                    local args = { "NuclearWaiste" }
+                    game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("GearShop: RequestPurchase"):InvokeServer(unpack(args))
+                    task.wait(5)
+                end
+            end)
+        end
+    end;
+})
    local Section = Pages2:CreateSection("Egg Shop (Auto Buy)")
 
     local autoCommonEgg = false
