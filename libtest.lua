@@ -991,17 +991,6 @@ do
             Converted["_Close"].Name = "Close"
             Converted["_Close"].Parent = Converted["_Profile"]
 
-            Converted["_Minimize"] = Instance.new("ImageLabel")
-            Converted["_Minimize"].Image = "rbxassetid://6031094678" -- Minimize icon
-            Converted["_Minimize"].ImageColor3 = Color3.fromRGB(225, 225, 225)
-            Converted["_Minimize"].AnchorPoint = Vector2.new(1, 0.5)
-            Converted["_Minimize"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            Converted["_Minimize"].BackgroundTransparency = 1
-            Converted["_Minimize"].Position = UDim2.new(1, -32, 0.5, 0) -- Next to close
-            Converted["_Minimize"].Size = UDim2.new(0, 22, 0, 22)
-            Converted["_Minimize"].Name = "Minimize"
-            Converted["_Minimize"].Parent = Converted["_Top1"]
-
             Converted["_Theme9"].Value = "ImageColor3"
             Converted["_Theme9"].Name = "Theme"
             Converted["_Theme9"].Parent = Converted["_Close"]
@@ -1433,7 +1422,7 @@ do
             Converted["_Frame"].Parent = Converted["_Main1"]
 
             Converted["_B"].Font = Enum.Font.Gotham
-            Converted["_B"].Text = "https://discord.gg/yP326dCDNx" -- please don't remove this, this is open sourced and I leave this here so that users can know the name of the UI library if they are interested in it
+            Converted["_B"].Text = "Frise X UI Lib: FRISESKGUJFUKG" -- please don't remove this, this is open sourced and I leave this here so that users can know the name of the UI library if they are interested in it
             Converted["_B"].TextColor3 = Color3.fromRGB(225.00000178813934, 225.00000178813934, 225.00000178813934)
             Converted["_B"].TextSize = 12
             Converted["_B"].AnchorPoint = Vector2.new(0.5, 0.5)
@@ -2030,49 +2019,6 @@ do
         end
 
         local lib = makeLibrary()
-
-        local restoreBtn = Instance.new("ImageButton")
-        restoreBtn.Name = "RestoreMini"
-        restoreBtn.Image = "rbxassetid://6031763426" -- Square icon
-        restoreBtn.Size = UDim2.new(0, 36, 0, 36)
-        restoreBtn.Position = UDim2.new(0, 20, 1, -56)
-        restoreBtn.BackgroundTransparency = 0.2
-        restoreBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-        restoreBtn.Visible = false
-        restoreBtn.Parent = lib
-
-        local closeBtn = utility:CreateButtonObject(lib.Main.Contents.Top.Close)
-        closeBtn.Activated:Connect(function()
-            self:Toggle(false)
-        end)
-
-        local minimizeBtn = utility:CreateButtonObject(lib.Main.Contents.Top.Minimize)
-        minimizeBtn.Activated:Connect(function()
-            lib.Main.Visible = false
-            restoreBtn.Visible = true
-        end)
-
-        restoreBtn.MouseButton1Click:Connect(function()
-            lib.Main.Visible = true
-            restoreBtn.Visible = false
-        end)
-
-        local dragging = false
-        local dragOffset = Vector2.new()
-        restoreBtn.MouseButton1Down:Connect(function(x, y)
-            dragging = true
-            dragOffset = Vector2.new(mouse.X, mouse.Y) - Vector2.new(restoreBtn.Position.X.Offset, restoreBtn.Position.Y.Offset)
-        end)
-        UIS.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = false
-            end
-        end)
-        Run.RenderStepped:Connect(function()
-            if dragging then
-                restoreBtn.Position = UDim2.new(0, mouse.X - dragOffset.X, 0, mouse.Y - dragOffset.Y)
-            end
-        end)
 
         local _connections = {}
 
@@ -6670,60 +6616,6 @@ do
                 end
                 tween1:Play()
             end
-
-            if not lib.Main.Contents.Top:FindFirstChild("Minimize") then
-    local minimizeBtnImg = Instance.new("ImageLabel")
-    minimizeBtnImg.Name = "Minimize"
-    minimizeBtnImg.Image = "rbxassetid://6031094678"
-    minimizeBtnImg.ImageColor3 = Color3.fromRGB(225, 225, 225)
-    minimizeBtnImg.AnchorPoint = Vector2.new(1, 0.5)
-    minimizeBtnImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    minimizeBtnImg.BackgroundTransparency = 1
-    minimizeBtnImg.Position = UDim2.new(1, -32, 0.5, 0)
-    minimizeBtnImg.Size = UDim2.new(0, 22, 0, 22)
-    minimizeBtnImg.Parent = lib.Main.Contents.Top
-end
-
--- Create Restore Button (small draggable square)
-local restoreBtn = Instance.new("ImageButton")
-restoreBtn.Name = "RestoreMini"
-restoreBtn.Image = "rbxassetid://6031763426" -- Square icon
-restoreBtn.Size = UDim2.new(0, 36, 0, 36)
-restoreBtn.Position = UDim2.new(0, 20, 1, -56)
-restoreBtn.BackgroundTransparency = 0.2
-restoreBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-restoreBtn.Visible = false
-restoreBtn.Parent = lib
-
--- Minimize logic
-local minimizeBtn = utility:CreateButtonObject(lib.Main.Contents.Top.Minimize)
-minimizeBtn.Activated:Connect(function()
-    lib.Main.Visible = false
-    restoreBtn.Visible = true
-end)
-
-restoreBtn.MouseButton1Click:Connect(function()
-    lib.Main.Visible = true
-    restoreBtn.Visible = false
-end)
-
--- Make the restore button draggable
-local dragging = false
-local dragOffset = Vector2.new()
-restoreBtn.MouseButton1Down:Connect(function(x, y)
-    dragging = true
-    dragOffset = Vector2.new(mouse.X, mouse.Y) - Vector2.new(restoreBtn.Position.X.Offset, restoreBtn.Position.Y.Offset)
-end)
-UIS.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-Run.RenderStepped:Connect(function()
-    if dragging then
-        restoreBtn.Position = UDim2.new(0, mouse.X - dragOffset.X, 0, mouse.Y - dragOffset.Y)
-    end
-end)
 
             local currentcolor = element.Main.CurrentColor
             local btn = utility:CreateButtonObject(currentcolor.Parent)
