@@ -162,7 +162,7 @@ mainSection:CreateToggle({
 })
 
 -- Auto-Farm Rainbow Island
-eventSection:CreateToggle({
+mainSection:CreateToggle({
     Name = "Auto-Farm Rainbow Island",
     Flag = "autoFarmRainbow",
     Default = false,
@@ -187,7 +187,7 @@ eventSection:CreateToggle({
 })
 
 -- Auto-Farm World Tree
-eventSection:CreateToggle({
+mainSection:CreateToggle({
     Name = "Auto-Farm World Tree",
     Flag = "autoFarmWT",
     Default = false,
@@ -211,7 +211,7 @@ eventSection:CreateToggle({
 })
 
 -- Auto-Hive
-collectionSection:CreateToggle({
+mainSection:CreateToggle({
     Name = "Auto-Hive",
     Flag = "autohive",
     Default = false,
@@ -235,7 +235,7 @@ collectionSection:CreateToggle({
 })
 
 -- Auto-Harvest
-collectionSection:CreateToggle({
+mainSection:CreateToggle({
     Name = "Auto-Harvest",
     Flag = "autoharvest",
     Default = false,
