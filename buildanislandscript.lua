@@ -131,9 +131,12 @@ local land = plot:FindFirstChild("Land")
 local expand = plot:WaitForChild("Expand")
 
 local Pages = UI:CreatePage("Main 🏠")
+local Shop = UI:CreatePage("Shop 🏠")
+local Fish = UI:CreatePage("Fish 🏠")
 local mainSection = Pages:CreateSection("Main (Toggles)")
-local eventSection = Pages:CreateSection("Events")
+local ShopSection = Shop:CreateSection("Shop (Toggles)")
 local collectionSection = Pages:CreateSection("Collection")
+local fishingSection = Fish:CreateSection("Fishing")
 
 -- Auto-Farm Plot
 mainSection:CreateToggle({
@@ -285,6 +288,51 @@ mainSection:CreateToggle({
                     task.wait(5)
                 end
             end)
+        end
+    end
+})
+
+
+-- Teleport to Fishing Spot
+fishingSection:CreateButton({
+    Name = "Teleport to Fishing Spot",
+    Callback = function()
+        local char = plr.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            char.HumanoidRootPart.CFrame = CFrame.new(-553.862, -1.64, -95.602)
+        end
+    end
+})
+
+-- Auto-Fish Toggle
+local autoFish = false
+local fishConnection
+local RunService = game:GetService("RunService")
+local lastCast = 0
+local cooldown = 0.01
+
+fishingSection:CreateToggle({
+    Name = "Auto-Fish",
+    Flag = "autoFish",
+    Default = false,
+    Callback = function(state)
+        autoFish = state
+        if state then
+            fishConnection = RunService.Heartbeat:Connect(function()
+                if (tick() - lastCast) >= cooldown then
+                    lastCast = tick()
+                    pcall(function()
+                        game:GetService("ReplicatedStorage").Communication.Fish:InvokeServer(
+                            Vector3.new(-553.862, -1.64, -95.602), 0.42
+                        )
+                    end)
+                end
+            end)
+        else
+            if fishConnection then
+                fishConnection:Disconnect()
+                fishConnection = nil
+            end
         end
     end
 })
