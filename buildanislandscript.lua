@@ -131,13 +131,11 @@ local land = plot:FindFirstChild("Land")
 local expand = plot:WaitForChild("Expand")
 
 local Pages = UI:CreatePage("Main 🏠")
-local Shop = UI:CreatePage("Shop 🏠")
-local Fish = UI:CreatePage("Fish 🏠")
 local mainSection = Pages:CreateSection("Main (Toggles)")
-local ShopSection = Shop:CreateSection("Shop (Toggles)")
+local eventSection = Pages:CreateSection("Events")         -- <--- Add this line!
 local collectionSection = Pages:CreateSection("Collection")
+local ShopSection = Shop:CreateSection("Shop (Toggles)")
 local fishingSection = Fish:CreateSection("Fishing")
-
 -- Auto-Farm Plot
 mainSection:CreateToggle({
     Name = "Auto-Farm Plot",
