@@ -2535,6 +2535,58 @@ do
         end
 
         lib.Notifications.Visible = true
+           -- === Minimize/Restore UI ===
+        local minimizedSquare = Instance.new("ImageButton")
+        minimizedSquare.Name = "MinimizedSquare"
+        minimizedSquare.Size = UDim2.new(0, 48, 0, 48)
+        minimizedSquare.Position = UDim2.new(0, 20, 0, 80)
+        minimizedSquare.BackgroundTransparency = 1
+        minimizedSquare.Image = "rbxassetid://YOUR_IMAGE_ID" -- Replace with your image asset id
+        minimizedSquare.Visible = false
+        minimizedSquare.Parent = lib
+
+        -- Make the minimized square draggable
+        local dragging, dragStart, startPos
+        minimizedSquare.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
+                dragStart = input.Position
+                startPos = minimizedSquare.Position
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
+            end
+        end)
+        minimizedSquare.InputChanged:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+                local delta = input.Position - dragStart
+                minimizedSquare.Position = UDim2.new(
+                    startPos.X.Scale, startPos.X.Offset + delta.X,
+                    startPos.Y.Scale, startPos.Y.Offset + delta.Y
+                )
+            end
+        end)
+
+        -- Add minimize button to top bar
+        local minimizeBtn = Instance.new("ImageButton")
+        minimizeBtn.Name = "MinimizeButton"
+        minimizeBtn.Size = UDim2.new(0, 22, 0, 22)
+        minimizeBtn.Position = UDim2.new(1, -32, 0.5, -11)
+        minimizeBtn.AnchorPoint = Vector2.new(0, 0)
+        minimizeBtn.BackgroundTransparency = 1
+        minimizeBtn.Image = "rbxassetid://6031094678" -- Roblox minimize icon, change if you want
+        minimizeBtn.Parent = lib.Main.Contents.Top
+
+        minimizeBtn.MouseButton1Click:Connect(function()
+            lib.Main.Visible = false
+            minimizedSquare.Visible = true
+        end)
+        minimizedSquare.MouseButton1Click:Connect(function()
+            lib.Main.Visible = true
+            minimizedSquare.Visible = false
+        end)
         lib.Main.Visible = true
         lib.Hint.Visible = false
 
