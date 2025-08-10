@@ -6671,6 +6671,60 @@ do
                 tween1:Play()
             end
 
+            if not lib.Main.Contents.Top:FindFirstChild("Minimize") then
+    local minimizeBtnImg = Instance.new("ImageLabel")
+    minimizeBtnImg.Name = "Minimize"
+    minimizeBtnImg.Image = "rbxassetid://6031094678"
+    minimizeBtnImg.ImageColor3 = Color3.fromRGB(225, 225, 225)
+    minimizeBtnImg.AnchorPoint = Vector2.new(1, 0.5)
+    minimizeBtnImg.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    minimizeBtnImg.BackgroundTransparency = 1
+    minimizeBtnImg.Position = UDim2.new(1, -32, 0.5, 0)
+    minimizeBtnImg.Size = UDim2.new(0, 22, 0, 22)
+    minimizeBtnImg.Parent = lib.Main.Contents.Top
+end
+
+-- Create Restore Button (small draggable square)
+local restoreBtn = Instance.new("ImageButton")
+restoreBtn.Name = "RestoreMini"
+restoreBtn.Image = "rbxassetid://6031763426" -- Square icon
+restoreBtn.Size = UDim2.new(0, 36, 0, 36)
+restoreBtn.Position = UDim2.new(0, 20, 1, -56)
+restoreBtn.BackgroundTransparency = 0.2
+restoreBtn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+restoreBtn.Visible = false
+restoreBtn.Parent = lib
+
+-- Minimize logic
+local minimizeBtn = utility:CreateButtonObject(lib.Main.Contents.Top.Minimize)
+minimizeBtn.Activated:Connect(function()
+    lib.Main.Visible = false
+    restoreBtn.Visible = true
+end)
+
+restoreBtn.MouseButton1Click:Connect(function()
+    lib.Main.Visible = true
+    restoreBtn.Visible = false
+end)
+
+-- Make the restore button draggable
+local dragging = false
+local dragOffset = Vector2.new()
+restoreBtn.MouseButton1Down:Connect(function(x, y)
+    dragging = true
+    dragOffset = Vector2.new(mouse.X, mouse.Y) - Vector2.new(restoreBtn.Position.X.Offset, restoreBtn.Position.Y.Offset)
+end)
+UIS.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+Run.RenderStepped:Connect(function()
+    if dragging then
+        restoreBtn.Position = UDim2.new(0, mouse.X - dragOffset.X, 0, mouse.Y - dragOffset.Y)
+    end
+end)
+
             local currentcolor = element.Main.CurrentColor
             local btn = utility:CreateButtonObject(currentcolor.Parent)
             local pencil = element.Main.CurrentColor.ImageLabel
