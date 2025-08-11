@@ -2543,8 +2543,7 @@ do
         minimizeBtn.AnchorPoint = Vector2.new(1, 0.5)
         minimizeBtn.BackgroundTransparency = 1
         minimizeBtn.Image = "rbxassetid://6031094678"
-        minimizeBtn.ZIndex = 100
-        minimizeBtn.Parent = lib.Main.Contents.Top
+
         -- Make the minimized square draggable
         local dragging, dragStart, startPos
         minimizedSquare.InputBegan:Connect(function(input)
