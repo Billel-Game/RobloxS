@@ -99,54 +99,23 @@ local teleportLocations = {
     ["Coral Reefs"]      = {-3169, 6, 2274},
     ["Weather Machine"]      = {-1501, 6, 1895},
     ["Crystal Island"]      = {1091, 5, 5067},
-
+    ["Angler rod"]      = {-3789, -148, -1345}
 }
-local teleportShops = {
-    ["Angler rod"]      = {-3789, -148, -1345},
-    -- Add more shop teleports here
-}
--- Helper function for teleporting
-local function teleportTo(pos)
-    local player = game.Players.LocalPlayer
-    local char = player.Character or player.CharacterAdded:Wait()
-    local hrp = char:FindFirstChild("HumanoidRootPart")
-    if hrp then
-        hrp.CFrame = CFrame.new(table.unpack(pos))
-    end
-end
 
--- Dropdown for locations
 mainSection:CreateDropdown({
     Name = "Teleport Location",
-    Flag = "TeleportLocationDropdown",
-    Options = (function()
-        local t = {}
-        for k in pairs(teleportLocations) do table.insert(t, k) end
-        table.sort(t)
-        return t
-    end)(),
+    Flag = "TeleportDropdown",
+    Options = {"Sisyphus Statue", "Angler rod", "Treasure Room"}, -- Use Options, not List
     Callback = function(selected)
         local pos = teleportLocations[selected]
         if pos then
-            teleportTo(pos)
+            local player = game.Players.LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.CFrame = CFrame.new(table.unpack(pos))
+            end
         end
     end
 })
 
--- Dropdown for shops
-mainSection:CreateDropdown({
-    Name = "Teleport Shop",
-    Flag = "TeleportShopDropdown",
-    Options = (function()
-        local t = {}
-        for k in pairs(teleportShops) do table.insert(t, k) end
-        table.sort(t)
-        return t
-    end)(),
-    Callback = function(selected)
-        local pos = teleportShops[selected]
-        if pos then
-            teleportTo(pos)
-        end
-    end
-})
