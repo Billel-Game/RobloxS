@@ -90,12 +90,21 @@ mainSection:CreateToggle({
 local teleportLocations = {
     ["Sisyphus Statue"] = {-3743, -136, -1017},
     ["Treasure Room"]   = {-3606, -267, -1580},
+    ["Winter Fest"]      = {1689, 7, 3309},
+    ["Tropical Grove"]      = {-2133, 53, 3748},
+    ["Stingray Shores"]      = {20, 4, 2836},
+    ["Kohona"]      = {-638, 16, 612},
+    ["Esoteric Depths"]      = {3191, -1303, 1419},
+    ["Esotoric Island"]      = {2038, 27, 1387},
+    ["Coral Reefs"]      = {-3169, 6, 2274},
+    ["Weather Machine"]      = {-1501, 6, 1895},
+    ["Crystal Island"]      = {1091, 5, 5067},
+
 }
 local teleportShops = {
     ["Angler rod"]      = {-3789, -148, -1345},
     -- Add more shop teleports here
 }
-
 -- Helper function for teleporting
 local function teleportTo(pos)
     local player = game.Players.LocalPlayer
