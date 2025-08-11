@@ -1,5 +1,12 @@
 local keyUrl = "https://raw.githubusercontent.com/Billel-Game/RobloxS/main/broken"
-local correctKey = game:HttpGet(keyUrl)
+local success, correctKey = pcall(function()
+    return game:HttpGet(keyUrl)
+end)
+if not success then
+    warn("Failed to fetch key:", correctKey)
+    return
+end
+print("Fetched key:", correctKey)
 local player = game.Players.LocalPlayer
 
 local screenGui = Instance.new("ScreenGui")
