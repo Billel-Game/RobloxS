@@ -6833,4 +6833,32 @@ function Library:ShowKeyPrompt(keyUrl, linkUrl)
     return true
 end
 
+function Library:CreateToggleButton(UI, assetId)
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "FuryScreenGui"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = playerGui
+
+    local toggleButton = Instance.new("ImageButton")
+    toggleButton.Name = "FuryUIToggle"
+    toggleButton.Image = "rbxassetid://" .. tostring(assetId or "133641333781908")
+    toggleButton.Size = UDim2.new(0, 50, 0, 50)
+    toggleButton.Position = UDim2.new(0, 10, 0, 10)
+    toggleButton.BackgroundColor3 = Color3.fromRGB(122, 28, 187)
+    toggleButton.BackgroundTransparency = 0.2
+    toggleButton.ZIndex = 999
+    toggleButton.BorderSizePixel = 3
+    toggleButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    toggleButton.Parent = screenGui
+
+    toggleButton.MouseButton1Click:Connect(function()
+        UI.container.Main.Visible = not UI.container.Main.Visible
+    end)
+
+    return toggleButton, screenGui
+end
+
 return Library
