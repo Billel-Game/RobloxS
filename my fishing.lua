@@ -1,4 +1,4 @@
-local keyUrl = "https://raw.githubusercontent.com/Billel-Game/RobloxS/main/broken.txt"
+local keyUrl = "https://raw.githubusercontent.com/Billel-Game/RobloxS/main/broken"
 local correctKey = game:HttpGet(keyUrl)
 local player = game.Players.LocalPlayer
 
