@@ -1,4 +1,5 @@
-local correctKey = "k9X2vB7pQzLm4T1s"
+local keyUrl = "https://github.com/Billel-Game/RobloxS/blob/main/broken.txt"
+local correctKey = game:HttpGet(keyUrl)
 local player = game.Players.LocalPlayer
 
 local screenGui = Instance.new("ScreenGui")
