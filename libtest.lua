@@ -2536,13 +2536,15 @@ do
 
         lib.Notifications.Visible = true
            -- === Minimize/Restore UI ===
-        local minimizeBtn = Instance.new("ImageButton")
-        minimizeBtn.Name = "MinimizeButton"
-        minimizeBtn.Size = UDim2.new(0, 22, 0, 22)
-        minimizeBtn.Position = UDim2.new(1, -32, 0.5, 0)
-        minimizeBtn.AnchorPoint = Vector2.new(1, 0.5)
-        minimizeBtn.BackgroundTransparency = 1
-        minimizeBtn.Image = "rbxassetid://6031094678"
+        local minimizedSquare = Instance.new("ImageButton")
+        minimizedSquare.Name = "MinimizedSquare"
+        minimizedSquare.Size = UDim2.new(0, 48, 0, 48)
+        minimizedSquare.Position = UDim2.new(1, -32, 0.5, 0)
+        minimizedSquare.AnchorPoint = Vector2.new(1, 0.5)
+        minimizedSquare.BackgroundTransparency = 1
+        minimizedSquare.Image = "http://www.roblox.com/asset/?id=10259890025" -- Replace with your image asset id
+        minimizedSquare.Visible = false
+        minimizedSquare.Parent = lib
 
         -- Make the minimized square draggable
         local dragging, dragStart, startPos
