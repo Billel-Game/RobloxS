@@ -116,6 +116,9 @@ screenGui.Name = "FuryScreenGui"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
+toggleButton.BorderSizePixel = 2 -- Thickness of the border (increase for thicker border)
+toggleButton.BorderColor3 = Color3.fromRGB(255, 255, 255) -- White border, change as desired
+
 local toggleButton = Instance.new("ImageButton")
 toggleButton.Name = "FuryUIToggle"
 toggleButton.Image = "rbxassetid://133641333781908"
