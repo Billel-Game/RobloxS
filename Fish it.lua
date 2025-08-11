@@ -89,43 +89,55 @@ mainSection:CreateToggle({
 
 local teleportLocations = {
     ["Sisyphus Statue"] = {-3743, -136, -1017},
-    ["Treasure Room"]   = {-3606, -267, -1580}
+    ["Treasure Room"]   = {-3606, -267, -1580},
+}
+local teleportShops = {
+    ["Angler rod"]      = {-3789, -148, -1345},
+    -- Add more shop teleports here
 }
 
+-- Helper function for teleporting
+local function teleportTo(pos)
+    local player = game.Players.LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        hrp.CFrame = CFrame.new(table.unpack(pos))
+    end
+end
+
+-- Dropdown for locations
 mainSection:CreateDropdown({
     Name = "Teleport Location",
-    Flag = "TeleportDropdown",
-    Options = {"Sisyphus Statue", "Angler rod", "Treasure Room"}, -- Use Options, not List
+    Flag = "TeleportLocationDropdown",
+    Options = (function()
+        local t = {}
+        for k in pairs(teleportLocations) do table.insert(t, k) end
+        table.sort(t)
+        return t
+    end)(),
     Callback = function(selected)
         local pos = teleportLocations[selected]
         if pos then
-            local player = game.Players.LocalPlayer
-            local char = player.Character or player.CharacterAdded:Wait()
-            local hrp = char:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                hrp.CFrame = CFrame.new(table.unpack(pos))
-            end
+            teleportTo(pos)
         end
     end
 })
 
-local teleportShops = {
-    ["Angler rod"]      = {-3789, -148, -1345},
-}
-
+-- Dropdown for shops
 mainSection:CreateDropdown({
-    Name = "Teleport Shops",
-    Flag = "TeleportDropdown",
-    Options = {"Sisyphus Statue", "Angler rod", "Treasure Room"}, -- Use Options, not List
+    Name = "Teleport Shop",
+    Flag = "TeleportShopDropdown",
+    Options = (function()
+        local t = {}
+        for k in pairs(teleportShops) do table.insert(t, k) end
+        table.sort(t)
+        return t
+    end)(),
     Callback = function(selected)
         local pos = teleportShops[selected]
         if pos then
-            local player = game.Players.LocalPlayer
-            local char = player.Character or player.CharacterAdded:Wait()
-            local hrp = char:FindFirstChild("HumanoidRootPart")
-            if hrp then
-                hrp.CFrame = CFrame.new(table.unpack(pos))
-            end
+            teleportTo(pos)
         end
     end
 })
