@@ -2541,7 +2541,7 @@ do
         minimizedSquare.Size = UDim2.new(0, 48, 0, 48)
         minimizedSquare.Position = UDim2.new(0, 20, 0, 80)
         minimizedSquare.BackgroundTransparency = 1
-        minimizedSquare.Image = "rbxassetid://11195673230" -- Replace with your image asset id
+        minimizedSquare.Image = "http://www.roblox.com/asset/?id=10259890025" -- Replace with your image asset id
         minimizedSquare.Visible = false
         minimizedSquare.Parent = lib
 
