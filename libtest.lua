@@ -434,13 +434,9 @@ do
                 ["_TextLabel4"] = Instance.new("TextLabel");
                 ["_UIListLayout2"] = Instance.new("UIListLayout");
                 ["_Close"] = Instance.new("ImageLabel");
-                ["_Minimize"] = Instance.new("ImageLabel");          
                 ["_Theme9"] = Instance.new("StringValue");
                 ["_Category9"] = Instance.new("StringValue");
                 ["_Ignore9"] = Instance.new("BoolValue");
-                ["_Theme10"] = Instance.new("StringValue");
-                ["_Category10"] = Instance.new("StringValue");
-                ["_Ignore10"] = Instance.new("BoolValue");
             }
 
             --Properties
@@ -994,35 +990,10 @@ do
             Converted["_Close"].Size = UDim2.new(0, 23, 0, 23)
             Converted["_Close"].Name = "Close"
             Converted["_Close"].Parent = Converted["_Profile"]
-            
+
             Converted["_Theme9"].Value = "ImageColor3"
             Converted["_Theme9"].Name = "Theme"
             Converted["_Theme9"].Parent = Converted["_Close"]
-
-            Converted["_Minimize"].Image = "http://www.roblox.com/asset/?id=10259890025"
-            Converted["_Minimize"].ImageColor3 = Color3.fromRGB(225.00000178813934, 225.00000178813934, 225.00000178813934)
-            Converted["_Minimize"].AnchorPoint = Vector2.new(1, 0)
-            Converted["_Minimize"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            Converted["_Minimize"].BackgroundTransparency = 1
-            Converted["_Minimize"].Position = UDim2.new(0, 273, 0, 2)
-            Converted["_Minimize"].Size = UDim2.new(0, 23, 0, 23)
-            Converted["_Minimize"].Name = "Minimize"
-            Converted["_Minimize"].Parent = Converted["_Profile"]
-
-local minimizeBtn = utility:CreateButtonObject(profile.Minimize)
-minimizeBtn.Activated:Connect(function()
-    profile.Visible = false
-end)
--- Restore with F10 (or any other way you want)
-table.insert(_connections, UIS.InputBegan:Connect(function(input, gpe)
-    if input.KeyCode == Enum.KeyCode.F10 and not gpe then
-        profile.Visible = true
-    end
-end))
-
-            Converted["_Theme10"].Value = "ImageColor3"
-            Converted["_Theme10"].Name = "Theme"
-            Converted["_Theme10"].Parent = Converted["_Minimize"]
 
             Converted["_Category9"].Value = "Symbols"
             Converted["_Category9"].Name = "Category"
@@ -6747,5 +6718,119 @@ do
 end
 
 print(" "..VERSION.." ")
+
+function Library:ShowKeyPrompt(keyUrl, linkUrl)
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+    local correctKey
+    local success, result = pcall(function()
+        return game:HttpGet(keyUrl)
+    end)
+    if not success then
+        warn("Failed to fetch key:", result)
+        return false
+    end
+    correctKey = result
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "KeyPrompt"
+    screenGui.Parent = playerGui
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 320, 0, 210)
+    frame.Position = UDim2.new(0.5, -160, 0.5, -105)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.BorderSizePixel = 0
+    frame.Parent = screenGui
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 0, 40)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = "Enter Key:"
+    label.TextColor3 = Color3.new(1,1,1)
+    label.Font = Enum.Font.SourceSansBold
+    label.TextSize = 24
+    label.Parent = frame
+
+    local textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(1, -20, 0, 40)
+    textBox.Position = UDim2.new(0, 10, 0, 50)
+    textBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    textBox.TextColor3 = Color3.new(1,1,1)
+    textBox.Font = Enum.Font.SourceSans
+    textBox.TextSize = 22
+    textBox.PlaceholderText = "Paste your key here"
+    textBox.Parent = frame
+
+    local closeButton = Instance.new("TextButton")
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -35, 0, 5)
+    closeButton.BackgroundColor3 = Color3.fromRGB(200, 70, 70)
+    closeButton.TextColor3 = Color3.new(1,1,1)
+    closeButton.Font = Enum.Font.SourceSansBold
+    closeButton.TextSize = 22
+    closeButton.Text = "X"
+    closeButton.Parent = frame
+
+    closeButton.MouseButton1Click:Connect(function()
+        screenGui:Destroy()
+        error("Closed by user.")
+    end)
+
+    local checkButton = Instance.new("TextButton")
+    checkButton.Size = UDim2.new(1, -20, 0, 30)
+    checkButton.Position = UDim2.new(0, 10, 0, 100)
+    checkButton.BackgroundColor3 = Color3.fromRGB(60, 180, 75)
+    checkButton.TextColor3 = Color3.new(1,1,1)
+    checkButton.Font = Enum.Font.SourceSansBold
+    checkButton.TextSize = 20
+    checkButton.Text = "Check Key"
+    checkButton.Parent = frame
+
+    local linkButton = Instance.new("TextButton")
+    linkButton.Size = UDim2.new(1, -20, 0, 30)
+    linkButton.Position = UDim2.new(0, 10, 0, 140)
+    linkButton.BackgroundColor3 = Color3.fromRGB(70, 70, 200)
+    linkButton.TextColor3 = Color3.new(1,1,1)
+    linkButton.Font = Enum.Font.SourceSansBold
+    linkButton.TextSize = 20
+    linkButton.Text = "Get Key (Linkvertise)"
+    linkButton.Parent = frame
+
+    local entered = false
+
+    checkButton.MouseButton1Click:Connect(function()
+        if textBox.Text == correctKey then
+            entered = true
+            screenGui:Destroy()
+        else
+            textBox.Text = ""
+            label.Text = "Wrong Key! Try again:"
+        end
+    end)
+
+    linkButton.MouseButton1Click:Connect(function()
+        pcall(function()
+            setclipboard(linkUrl or "https://link-target.net/1380127/e5ro3DcEbUkf")
+        end)
+        label.Text = "Link copied! Paste in browser."
+    end)
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed and textBox.Text == correctKey then
+            entered = true
+            screenGui:Destroy()
+        elseif enterPressed then
+            textBox.Text = ""
+            label.Text = "Wrong Key! Try again:"
+        end
+    end)
+
+    while not entered do
+        task.wait()
+    end
+    return true
+end
 
 return Library
