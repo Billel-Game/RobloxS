@@ -1422,7 +1422,7 @@ do
             Converted["_Frame"].Parent = Converted["_Main1"]
 
             Converted["_B"].Font = Enum.Font.Gotham
-            Converted["_B"].Text = "https://discord.gg/yP326dCDNx" -- please don't remove this, this is open sourced and I leave this here so that users can know the name of the UI library if they are interested in it
+            Converted["_B"].Text = "https://discord.com/invite/xfh4ErvQtd" 
             Converted["_B"].TextColor3 = Color3.fromRGB(225.00000178813934, 225.00000178813934, 225.00000178813934)
             Converted["_B"].TextSize = 12
             Converted["_B"].AnchorPoint = Vector2.new(0.5, 0.5)
@@ -6718,5 +6718,147 @@ do
 end
 
 print(" "..VERSION.." ")
+
+function Library:ShowKeyPrompt(keyUrl, linkUrl)
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+    local correctKey
+    local success, result = pcall(function()
+        return game:HttpGet(keyUrl)
+    end)
+    if not success then
+        warn("Failed to fetch key:", result)
+        return false
+    end
+    correctKey = result
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "KeyPrompt"
+    screenGui.Parent = playerGui
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 320, 0, 210)
+    frame.Position = UDim2.new(0.5, -160, 0.5, -105)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.BorderSizePixel = 0
+    frame.Parent = screenGui
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 0, 40)
+    label.Position = UDim2.new(0, 0, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = "Enter Key:"
+    label.TextColor3 = Color3.new(1,1,1)
+    label.Font = Enum.Font.SourceSansBold
+    label.TextSize = 24
+    label.Parent = frame
+
+    local textBox = Instance.new("TextBox")
+    textBox.Size = UDim2.new(1, -20, 0, 40)
+    textBox.Position = UDim2.new(0, 10, 0, 50)
+    textBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    textBox.TextColor3 = Color3.new(1,1,1)
+    textBox.Font = Enum.Font.SourceSans
+    textBox.TextSize = 22
+    textBox.PlaceholderText = "Paste your key here"
+    textBox.Parent = frame
+
+    local closeButton = Instance.new("TextButton")
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -35, 0, 5)
+    closeButton.BackgroundColor3 = Color3.fromRGB(200, 70, 70)
+    closeButton.TextColor3 = Color3.new(1,1,1)
+    closeButton.Font = Enum.Font.SourceSansBold
+    closeButton.TextSize = 22
+    closeButton.Text = "X"
+    closeButton.Parent = frame
+
+    closeButton.MouseButton1Click:Connect(function()
+        screenGui:Destroy()
+        error("Closed by user.")
+    end)
+
+    local checkButton = Instance.new("TextButton")
+    checkButton.Size = UDim2.new(1, -20, 0, 30)
+    checkButton.Position = UDim2.new(0, 10, 0, 100)
+    checkButton.BackgroundColor3 = Color3.fromRGB(60, 180, 75)
+    checkButton.TextColor3 = Color3.new(1,1,1)
+    checkButton.Font = Enum.Font.SourceSansBold
+    checkButton.TextSize = 20
+    checkButton.Text = "Check Key"
+    checkButton.Parent = frame
+
+    local linkButton = Instance.new("TextButton")
+    linkButton.Size = UDim2.new(1, -20, 0, 30)
+    linkButton.Position = UDim2.new(0, 10, 0, 140)
+    linkButton.BackgroundColor3 = Color3.fromRGB(70, 70, 200)
+    linkButton.TextColor3 = Color3.new(1,1,1)
+    linkButton.Font = Enum.Font.SourceSansBold
+    linkButton.TextSize = 20
+    linkButton.Text = "Get Key (Linkvertise)"
+    linkButton.Parent = frame
+
+    local entered = false
+
+    checkButton.MouseButton1Click:Connect(function()
+        if textBox.Text == correctKey then
+            entered = true
+            screenGui:Destroy()
+        else
+            textBox.Text = ""
+            label.Text = "Wrong Key! Try again:"
+        end
+    end)
+
+    linkButton.MouseButton1Click:Connect(function()
+        pcall(function()
+            setclipboard(linkUrl or "https://link-target.net/1380127/e5ro3DcEbUkf")
+        end)
+        label.Text = "Link copied! Paste in browser."
+    end)
+
+    textBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed and textBox.Text == correctKey then
+            entered = true
+            screenGui:Destroy()
+        elseif enterPressed then
+            textBox.Text = ""
+            label.Text = "Wrong Key! Try again:"
+        end
+    end)
+
+    while not entered do
+        task.wait()
+    end
+    return true
+end
+
+function Library:CreateToggleButton(UI, assetId)
+    local player = game.Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "FuryScreenGui"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = playerGui
+
+    local toggleButton = Instance.new("ImageButton")
+    toggleButton.Name = "FuryUIToggle"
+    toggleButton.Image = "rbxassetid://" .. tostring(assetId or "133641333781908")
+    toggleButton.Size = UDim2.new(0, 50, 0, 50)
+    toggleButton.Position = UDim2.new(0, 10, 0, 10)
+    toggleButton.BackgroundColor3 = Color3.fromRGB(122, 28, 187)
+    toggleButton.BackgroundTransparency = 0.2
+    toggleButton.ZIndex = 999
+    toggleButton.BorderSizePixel = 3
+    toggleButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    toggleButton.Parent = screenGui
+
+    toggleButton.MouseButton1Click:Connect(function()
+        UI.container.Main.Visible = not UI.container.Main.Visible
+    end)
+
+    return toggleButton, screenGui
+end
 
 return Library
