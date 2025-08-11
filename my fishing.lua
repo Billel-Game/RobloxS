@@ -124,8 +124,8 @@ toggleButton.Position = UDim2.new(0, 10, 0, 10)
 toggleButton.BackgroundColor3 = Color3.fromRGB(122, 28, 187)
 toggleButton.BackgroundTransparency = 0.2
 toggleButton.ZIndex = 999
-toggleButton.BorderSizePixel = 5 -- Thickness of the border (increase for thicker border)
-toggleButton.BorderColor3 = Color3.fromRGB(255, 255, 255) -- White border, change as desired
+toggleButton.BorderSizePixel = 3
+toggleButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 toggleButton.Parent = screenGui
 
 toggleButton.MouseButton1Click:Connect(function()
