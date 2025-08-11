@@ -1009,6 +1009,17 @@ do
             Converted["_Minimize"].Name = "Minimize"
             Converted["_Minimize"].Parent = Converted["_Profile"]
 
+local minimizeBtn = utility:CreateButtonObject(profile.Minimize)
+minimizeBtn.Activated:Connect(function()
+    profile.Visible = false
+end)
+-- Restore with F10 (or any other way you want)
+table.insert(_connections, UIS.InputBegan:Connect(function(input, gpe)
+    if input.KeyCode == Enum.KeyCode.F10 and not gpe then
+        profile.Visible = true
+    end
+end))
+
             Converted["_Theme10"].Value = "ImageColor3"
             Converted["_Theme10"].Name = "Theme"
             Converted["_Theme10"].Parent = Converted["_Minimize"]
