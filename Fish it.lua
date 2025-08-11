@@ -86,3 +86,46 @@ mainSection:CreateToggle({
         end
     end
 })
+
+local teleportLocations = {
+    ["Sisyphus Statue"] = {-3743, -136, -1017},
+    ["Treasure Room"]   = {-3606, -267, -1580}
+}
+
+mainSection:CreateDropdown({
+    Name = "Teleport Location",
+    Flag = "TeleportDropdown",
+    Options = {"Sisyphus Statue", "Angler rod", "Treasure Room"}, -- Use Options, not List
+    Callback = function(selected)
+        local pos = teleportLocations[selected]
+        if pos then
+            local player = game.Players.LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.CFrame = CFrame.new(table.unpack(pos))
+            end
+        end
+    end
+})
+
+local teleportShops = {
+    ["Angler rod"]      = {-3789, -148, -1345},
+}
+
+mainSection:CreateDropdown({
+    Name = "Teleport Shops",
+    Flag = "TeleportDropdown",
+    Options = {"Sisyphus Statue", "Angler rod", "Treasure Room"}, -- Use Options, not List
+    Callback = function(selected)
+        local pos = teleportShops[selected]
+        if pos then
+            local player = game.Players.LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                hrp.CFrame = CFrame.new(table.unpack(pos))
+            end
+        end
+    end
+})
