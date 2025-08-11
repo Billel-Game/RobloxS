@@ -102,10 +102,16 @@ local teleportLocations = {
     ["Angler rod"]      = {-3789, -148, -1345}
 }
 
+local teleportNames = {}
+for name in pairs(teleportLocations) do
+    table.insert(teleportNames, name)
+end
+table.sort(teleportNames)
+
 mainSection:CreateDropdown({
     Name = "Teleport Location",
     Flag = "TeleportDropdown",
-    Options = {"Sisyphus Statue", "Angler rod", "Treasure Room"}, -- Use Options, not List
+    Options = teleportNames,
     Callback = function(selected)
         local pos = teleportLocations[selected]
         if pos then
