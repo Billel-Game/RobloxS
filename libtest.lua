@@ -434,9 +434,13 @@ do
                 ["_TextLabel4"] = Instance.new("TextLabel");
                 ["_UIListLayout2"] = Instance.new("UIListLayout");
                 ["_Close"] = Instance.new("ImageLabel");
+                ["_Minimize"] = Instance.new("ImageLabel");          
                 ["_Theme9"] = Instance.new("StringValue");
                 ["_Category9"] = Instance.new("StringValue");
                 ["_Ignore9"] = Instance.new("BoolValue");
+                ["_Theme10"] = Instance.new("StringValue");
+                ["_Category10"] = Instance.new("StringValue");
+                ["_Ignore10"] = Instance.new("BoolValue");
             }
 
             --Properties
@@ -990,10 +994,24 @@ do
             Converted["_Close"].Size = UDim2.new(0, 23, 0, 23)
             Converted["_Close"].Name = "Close"
             Converted["_Close"].Parent = Converted["_Profile"]
-
+            
             Converted["_Theme9"].Value = "ImageColor3"
             Converted["_Theme9"].Name = "Theme"
             Converted["_Theme9"].Parent = Converted["_Close"]
+
+            Converted["_Minimize"].Image = "http://www.roblox.com/asset/?id=10259890025"
+            Converted["_Minimize"].ImageColor3 = Color3.fromRGB(225.00000178813934, 225.00000178813934, 225.00000178813934)
+            Converted["_Minimize"].AnchorPoint = Vector2.new(1, 0)
+            Converted["_Minimize"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            Converted["_Minimize"].BackgroundTransparency = 1
+            Converted["_Minimize"].Position = UDim2.new(0, 273, 0, 2)
+            Converted["_Minimize"].Size = UDim2.new(0, 23, 0, 23)
+            Converted["_Minimize"].Name = "Minimize"
+            Converted["_Minimize"].Parent = Converted["_Profile"]
+
+            Converted["_Theme10"].Value = "ImageColor3"
+            Converted["_Theme10"].Name = "Theme"
+            Converted["_Theme10"].Parent = Converted["_Minimize"]
 
             Converted["_Category9"].Value = "Symbols"
             Converted["_Category9"].Name = "Category"
@@ -2535,59 +2553,6 @@ do
         end
 
         lib.Notifications.Visible = true
-           -- === Minimize/Restore UI ===
-        local minimizedSquare = Instance.new("ImageButton")
-        minimizedSquare.Name = "MinimizedSquare"
-        minimizedSquare.Size = UDim2.new(0, 48, 0, 48)
-        minimizedSquare.Position = UDim2.new(1, -32, 0.5, 0)
-        minimizedSquare.AnchorPoint = Vector2.new(1, 0.5)
-        minimizedSquare.BackgroundTransparency = 1
-        minimizedSquare.Image = "http://www.roblox.com/asset/?id=10259890025" -- Replace with your image asset id
-        minimizedSquare.Visible = false
-        minimizedSquare.Parent = lib
-
-        -- Make the minimized square draggable
-        local dragging, dragStart, startPos
-        minimizedSquare.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = true
-                dragStart = input.Position
-                startPos = minimizedSquare.Position
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        dragging = false
-                    end
-                end)
-            end
-        end)
-        minimizedSquare.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
-                local delta = input.Position - dragStart
-                minimizedSquare.Position = UDim2.new(
-                    startPos.X.Scale, startPos.X.Offset + delta.X,
-                    startPos.Y.Scale, startPos.Y.Offset + delta.Y
-                )
-            end
-        end)
-
-        -- Add minimize button to top bar
-        local minimizeBtn = Instance.new("ImageButton")
-        minimizeBtn.Name = "MinimizeButton"
-        minimizeBtn.Size = UDim2.new(0, 22, 0, 22)
-minimizeBtn.Position = UDim2.new(0.93, 0, 0.5, 0)
-minimizeBtn.AnchorPoint = Vector2.new(0, 0.5)
-        minimizeBtn.BackgroundTransparency = 1
-        minimizeBtn.Image = "rbxassetid://6031094678" -- Roblox minimize icon, change if you want
-        minimizeBtn.Parent = lib.Main.Contents.Top
-
-        minimizeBtn.MouseButton1Click:Connect(function()
-            lib.Main.Visible = false
-            minimizedSquare.Visible = true
-        end)
-        minimizedSquare.MouseButton1Click:Connect(function()
-            lib.Main.Visible = true
-            minimizedSquare.Visible = false
-        end)
         lib.Main.Visible = true
         lib.Hint.Visible = false
 
