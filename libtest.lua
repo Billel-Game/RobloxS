@@ -2573,8 +2573,8 @@ do
         local minimizeBtn = Instance.new("ImageButton")
         minimizeBtn.Name = "MinimizeButton"
         minimizeBtn.Size = UDim2.new(0, 22, 0, 22)
-        minimizeBtn.Position = UDim2.new(1, -4, 0.5, 0)
-        minimizeBtn.AnchorPoint = Vector2.new(1, 0.5)
+minimizeBtn.Position = UDim2.new(0.93, 0, 0.5, 0)
+minimizeBtn.AnchorPoint = Vector2.new(0, 0.5)
         minimizeBtn.BackgroundTransparency = 1
         minimizeBtn.Image = "rbxassetid://6031094678" -- Roblox minimize icon, change if you want
         minimizeBtn.Parent = lib.Main.Contents.Top
