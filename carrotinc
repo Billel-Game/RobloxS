@@ -21,8 +21,6 @@ local carrotRemote = game:GetService("ReplicatedStorage")
     :WaitForChild("Remotes")
     :WaitForChild("CollectCarrot")
 
-local autoCarrotEnabled = false
-
 local carrotArgs = {
     {
         Currency = "Carrots",
@@ -33,8 +31,10 @@ local carrotArgs = {
     }
 }
 
+local autoCarrotEnabled = false
+
 mainSection:CreateToggle({
-    Name = "🥕 Auto Collect Carrot",
+    Name = "🥕 Auto Collect Diamond Carrot",
     Flag = "AutoCarrot",
     Default = false,
     Callback = function(state)
@@ -49,14 +49,5 @@ mainSection:CreateToggle({
                 end
             end)
         end
-    end
-})
-
-mainSection:CreateToggle({
-    Name = "Test Toggle",
-    Flag = "TestToggle",
-    Default = false,
-    Callback = function(state)
-        print("Test Toggle:", state)
     end
 })
