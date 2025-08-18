@@ -24,10 +24,10 @@ local carrotRemote = game:GetService("ReplicatedStorage")
 local carrotArgs = {
     {
         Currency = "Carrots",
-        Rarity = 2,
-        ID = "Diamond_Carrot",
-        Value = 250,
-        Name = "Diamond carrot"
+        Rarity = 0.1,
+        ID = "DarkMatter_Carrot",
+        Value = 1500,
+        Name = "Dark matter carrot"
     }
 }
 
@@ -46,6 +46,32 @@ mainSection:CreateToggle({
                         carrotRemote:FireServer(unpack(carrotArgs))
                     end)
                     task.wait(0.1)
+                end
+            end)
+        end
+    end
+})
+
+local rebirthRemote = game:GetService("ReplicatedStorage")
+    :WaitForChild("Events")
+    :WaitForChild("Remotes")
+    :WaitForChild("RebirthClicked")
+
+local autoRebirthEnabled = false
+
+mainSection:CreateToggle({
+    Name = "🔄 Auto Rebirth",
+    Flag = "AutoRebirth",
+    Default = false,
+    Callback = function(state)
+        autoRebirthEnabled = state
+        if state then
+            task.spawn(function()
+                while autoRebirthEnabled do
+                    pcall(function()
+                        rebirthRemote:InvokeServer()
+                    end)
+                    task.wait(10)
                 end
             end)
         end
