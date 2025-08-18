@@ -77,3 +77,80 @@ mainSection:CreateToggle({
         end
     end
 })
+
+-- ...existing code...
+
+local buyMaxRemote = game:GetService("ReplicatedStorage")
+    :WaitForChild("Events")
+    :WaitForChild("Remotes")
+    :WaitForChild("BuyMaxClicked")
+
+local carrotValueArgs = {
+    workspace:WaitForChild("Boards"):WaitForChild("UpgradeBoards"):WaitForChild("CarrotUpgrades"):WaitForChild("BoardPart"):WaitForChild("Ui"):WaitForChild("Frame"):WaitForChild("CarrotValue"),
+    {
+        Description = "",
+        OrginalCost = 5,
+        CostMultiplier = 1.5,
+        Name = "CarrotValue",
+        IncreaseAmountType = "Addition",
+        IncreasingStat = "CarrotValue",
+        CostCurrency = "Carrots",
+        IncreasingAmount = 2,
+        MaxLvl = 80
+    }
+}
+
+local maxCarrotAmountArgs = {
+    workspace:WaitForChild("Boards"):WaitForChild("UpgradeBoards"):WaitForChild("CarrotUpgrades"):WaitForChild("BoardPart"):WaitForChild("Ui"):WaitForChild("Frame"):WaitForChild("MaxCarrotAmount"),
+    {
+        Description = "",
+        OrginalCost = 2,
+        CostMultiplier = 1.5,
+        Name = "MaxCarrotAmount",
+        IncreaseAmountType = "Addition",
+        IncreasingStat = "MaxCarrotAmount",
+        CostCurrency = "Carrots",
+        IncreasingAmount = 1,
+        MaxLvl = 50
+    }
+}
+
+local growthRateArgs = {
+    workspace:WaitForChild("Boards"):WaitForChild("UpgradeBoards"):WaitForChild("CarrotUpgrades"):WaitForChild("BoardPart"):WaitForChild("Ui"):WaitForChild("Frame"):WaitForChild("GrowthRate"),
+    {
+        Description = "",
+        OrginalCost = 5,
+        CostMultiplier = 4,
+        Name = "GrowthRate",
+        IncreaseAmountType = "Addition",
+        IncreasingStat = "GrowthRate",
+        CostCurrency = "Carrots",
+        IncreasingAmount = -0.2,
+        MaxLvl = 9
+    }
+}
+
+local autoBuyUpgradesEnabled = false
+
+mainSection:CreateToggle({
+    Name = "⬆️ Auto Buy All Carrot Upgrades",
+    Flag = "AutoBuyAllCarrotUpgrades",
+    Default = false,
+    Callback = function(state)
+        autoBuyUpgradesEnabled = state
+        if state then
+            task.spawn(function()
+                while autoBuyUpgradesEnabled do
+                    pcall(function()
+                        buyMaxRemote:InvokeServer(unpack(carrotValueArgs))
+                        buyMaxRemote:InvokeServer(unpack(maxCarrotAmountArgs))
+                        buyMaxRemote:InvokeServer(unpack(growthRateArgs))
+                    end)
+                    task.wait(1)
+                end
+            end)
+        end
+    end
+})
+
+-- ...existing code...
