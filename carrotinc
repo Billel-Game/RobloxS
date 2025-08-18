@@ -16,29 +16,34 @@ local toggleButton = omni:CreateToggleButton(UI, 133641333781908)
 local mainPage = UI:CreatePage("Main 🏠")
 local mainSection = mainPage:CreateSection("Main (Toggles)")
 
---// Services
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local carrotRemote = game:GetService("ReplicatedStorage")
+    :WaitForChild("Events")
+    :WaitForChild("Remotes")
+    :WaitForChild("CollectCarrot")
 
---// Remote Paths
-local remoteFolder = ReplicatedStorage:WaitForChild("\232\132\154\230\156\172")
-local remoteEvent = remoteFolder:WaitForChild("RemoteEvent")
-local fishingRemote = remoteEvent:WaitForChild("\228\186\139\228\187\182\232\167\166\229\143\145")
+local autoCarrotEnabled = false
 
---// Auto Fish Toggle
-local autoFishEnabled = false
+local carrotArgs = {
+    {
+        Currency = "Carrots",
+        Rarity = 2,
+        ID = "Diamond_Carrot",
+        Value = 250,
+        Name = "Diamond carrot"
+    }
+}
 
 mainSection:CreateToggle({
-    Name = "🎣 Auto Fish",
-    Flag = "AutoFish",
+    Name = "🥕 Auto Collect Carrot",
+    Flag = "AutoCarrot",
     Default = false,
     Callback = function(state)
-        autoFishEnabled = state
+        autoCarrotEnabled = state
         if state then
             task.spawn(function()
-                local args = { { event = "\233\146\147\233\177\188" } }
-                while autoFishEnabled do
+                while autoCarrotEnabled do
                     pcall(function()
-                        fishingRemote:FireServer(unpack(args))
+                        carrotRemote:FireServer(unpack(carrotArgs))
                     end)
                     task.wait(0.1)
                 end
@@ -47,25 +52,11 @@ mainSection:CreateToggle({
     end
 })
 
---// Auto Sell Toggle
-local autoSellEnabled = false
-
 mainSection:CreateToggle({
-    Name = "💰 Auto Sell Inventory",
-    Flag = "AutoSellInventory",
+    Name = "Test Toggle",
+    Flag = "TestToggle",
     Default = false,
     Callback = function(state)
-        autoSellEnabled = state
-        if state then
-            task.spawn(function()
-                local args = { { event = "\229\133\168\233\131\168\229\135\186\229\148\174" } }
-                while autoSellEnabled do
-                    pcall(function()
-                        fishingRemote:FireServer(unpack(args))
-                    end)
-                    task.wait(0.5)
-                end
-            end)
-        end
+        print("Test Toggle:", state)
     end
 })
